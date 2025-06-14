@@ -138,6 +138,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -484,7 +497,22 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Fire Trap - Level 2_0: 8916027226900198512
+      Fire Trap - Level 2_1: 868099224779372193
+      Fire Trap - Level 2_10: -2579352471090023489
+      Fire Trap - Level 2_11: 1842377663075723923
+      Fire Trap - Level 2_12: 2595104471307327171
+      Fire Trap - Level 2_13: 518860362554975946
+      Fire Trap - Level 2_14: 2740144098763119937
+      Fire Trap - Level 2_2: -5587472448636572643
+      Fire Trap - Level 2_3: -645124315933402582
+      Fire Trap - Level 2_4: 383114150178742059
+      Fire Trap - Level 2_5: -6949860416723368974
+      Fire Trap - Level 2_6: 1848820288417759169
+      Fire Trap - Level 2_7: -6040788125211470463
+      Fire Trap - Level 2_8: 1373783504381292886
+      Fire Trap - Level 2_9: 5912526033678768656
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
