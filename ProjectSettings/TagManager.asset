@@ -12,6 +12,7 @@ TagManager:
   - Boss
   - Enemy
   - SpamEnemy
+  - DeathZone
   layers:
   - Default
   - TransparentFX
