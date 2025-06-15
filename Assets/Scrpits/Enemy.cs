@@ -154,6 +154,15 @@ public class Enemy : MonoBehaviour
         Debug.Log($"{gameObject.name} nhận biết Player đã chết, chuyển sang trạng thái Idle.");
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("DeathZone"))
+        {
+            Die();
+            Debug.Log(this.gameObject.name + " fell into DeathZone!");
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (detectPoint == null) return;
