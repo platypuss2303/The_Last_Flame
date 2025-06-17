@@ -107,6 +107,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\LockPosZ.cs" />
     <Compile Include="Assets\Scrpits\BackGround.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ExpandingAimReticle.cs" />
+    <Compile Include="Assets\Scrpits\Level 2\Enemylv2.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SamplesDynamicUI.cs" />
   </ItemGroup>
   <ItemGroup>
