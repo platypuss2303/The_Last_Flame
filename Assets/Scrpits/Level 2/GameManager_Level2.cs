@@ -100,7 +100,8 @@ public class GameManager_Level2 : MonoBehaviour
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
-            Debug.Log("Game Over UI activated!");
+            Time.timeScale = 1f; // Giữ game chạy
+            Debug.Log("Game Over UI activated at " + System.DateTime.Now);
         }
         else
         {
@@ -113,7 +114,7 @@ public class GameManager_Level2 : MonoBehaviour
         if (victoryUI != null)
         {
             victoryUI.SetActive(true);
-            Debug.Log("Victory UI activated!");
+            Debug.Log("Victory UI activated at " + System.DateTime.Now);
         }
         else
         {
