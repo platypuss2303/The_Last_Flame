@@ -60,20 +60,17 @@ public class Player_Level2 : MonoBehaviour
         {
             spriteRenderer.sortingLayerName = "Player";
             spriteRenderer.sortingOrder = 10;
-            Debug.Log("Player SpriteRenderer - SortingLayer: " + spriteRenderer.sortingLayerName + ", SortingOrder: " + spriteRenderer.sortingOrder);
         }
         else
         {
-            Debug.LogError("SpriteRenderer không tìm thấy trên Player! Vui lòng thêm SpriteRenderer component.");
+            Debug.LogError("SpriteRenderer không tìm thấy trên Player!");
         }
 
         tr = GetComponent<TrailRenderer>();
         if (tr == null)
         {
-            Debug.LogError("TrailRenderer không tìm thấy trên Player! Vui lòng thêm TrailRenderer component.");
+            Debug.LogError("TrailRenderer không tìm thấy trên Player!");
         }
-
-        Debug.Log("Player Start - GameObject active: " + gameObject.activeSelf + ", HP: " + maxHealth + ", Position: " + transform.position);
 
         GameObject door = GameObject.FindWithTag("Door");
         if (door != null)
@@ -85,38 +82,20 @@ public class Player_Level2 : MonoBehaviour
             Debug.LogError("Door not found in scene!");
         }
 
-        if (victoryUI != null)
-        {
-            victoryUI.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("VictoryUI is not assigned in the Inspector!");
-        }
-
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("GameOverUI is not assigned in the Inspector!");
-        }
+        if (victoryUI != null) victoryUI.SetActive(false);
+        if (gameOverUI != null) gameOverUI.SetActive(false);
     }
 
     void Update()
     {
-        if (isDashing)
-        {
-            return;
-        }
+        if (isDashing) return;
 
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && canDash)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
         }
 
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetKeyDown(KeyCode.Q) && canDash && !isAttackOnCooldown)
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q) && canDash && !isAttackOnCooldown)
         {
             StartCoroutine(Dash());
             animator.SetTrigger("PunchTrigger");
@@ -124,14 +103,7 @@ public class Player_Level2 : MonoBehaviour
             Invoke("EndAttackCooldown", attackCooldownDuration);
         }
 
-        if (!gameObject.activeSelf || isDead)
-        {
-            Debug.LogError("Player is inactive or dead in Update! HP: " + maxHealth);
-            return;
-        }
-
-        string spriteRendererStatus = spriteRenderer != null ? spriteRenderer.enabled.ToString() : "SpriteRenderer is null";
-        Debug.Log("Player Update - GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position + ", SpriteRenderer enabled: " + spriteRendererStatus);
+        if (!gameObject.activeSelf || isDead) return;
 
         if (isWon)
         {
@@ -141,42 +113,38 @@ public class Player_Level2 : MonoBehaviour
             return;
         }
 
-        if (maxHealth <= 0)
-        {
-            Die();
-            return;
-        }
-
         currentCoinText.text = currentCoin.ToString();
         maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 
-        if (movement < 0f && facingRight == true)
+        if (movement < 0f && facingRight)
         {
             transform.eulerAngles = new Vector3(0f, -180f, 0f);
             facingRight = false;
         }
-        else if (movement > 0f && facingRight == false)
+        else if (movement > 0f && !facingRight)
         {
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
             facingRight = true;
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGround == true)
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             Jump();
             animator.SetBool("Jump", true);
             isGround = false;
         }
-        if (Mathf.Abs(movement) > .1f)
+
+        if (Mathf.Abs(movement) > 0.1f)
         {
             animator.SetFloat("Walk", 1f);
         }
-        else if (Mathf.Abs(movement) < 0.1f)
+        else
         {
             animator.SetFloat("Walk", 0f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && !isAttackOnCooldown && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+        if (Input.GetKeyDown(KeyCode.Q) && !isAttackOnCooldown)
         {
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
@@ -193,20 +161,9 @@ public class Player_Level2 : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !isAttackOnCooldown)
         {
             int randomIndex = Random.Range(0, 3);
-
-            if (randomIndex == 0)
-            {
-                animator.SetTrigger("Attack1");
-            }
-            else if (randomIndex == 1)
-            {
-                animator.SetTrigger("Attack2");
-            }
-            else
-            {
-                animator.SetTrigger("Attack3");
-            }
-
+            if (randomIndex == 0) animator.SetTrigger("Attack1");
+            else if (randomIndex == 1) animator.SetTrigger("Attack2");
+            else animator.SetTrigger("Attack3");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
         }
@@ -219,10 +176,7 @@ public class Player_Level2 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDashing)
-        {
-            return;
-        }
+        if (isDashing) return;
 
         if (gameObject.activeSelf && !isDead)
         {
@@ -234,9 +188,7 @@ public class Player_Level2 : MonoBehaviour
     {
         if (rb != null && gameObject.activeSelf && !isDead)
         {
-            Vector2 velocity = rb.linearVelocity;
-            velocity.y = jumpHeight;
-            rb.linearVelocity = velocity;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
         }
     }
 
@@ -247,25 +199,11 @@ public class Player_Level2 : MonoBehaviour
             Collider2D hitInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, targetLayer);
             if (hitInfo)
             {
-                Enemy enemyScript = hitInfo.GetComponent<Enemy>();
+                EnemyLv2 enemyScript = hitInfo.GetComponent<EnemyLv2>();
                 if (enemyScript != null)
                 {
                     enemyScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Enemy)!");
-                }
-
-                SpamEnemy1 spamEnemyScript = hitInfo.GetComponent<SpamEnemy1>();
-                if (spamEnemyScript != null)
-                {
-                    spamEnemyScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (SpamEnemy1)!");
-                }
-
-                Boss bossScript = hitInfo.GetComponent<Boss>();
-                if (bossScript != null)
-                {
-                    bossScript.TakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Boss)!");
+                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)!");
                 }
             }
         }
@@ -273,7 +211,7 @@ public class Player_Level2 : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground" && gameObject.activeSelf && !isDead)
+        if (collision.gameObject.tag == "Ground" && !isDead)
         {
             isGround = true;
             animator.SetBool("Jump", false);
@@ -282,30 +220,19 @@ public class Player_Level2 : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!gameObject.activeSelf || isDead)
-        {
-            return;
-        }
+        if (!gameObject.activeSelf || isDead) return;
 
         if (other.gameObject.tag == "Coin")
         {
             currentCoin++;
-            if (gameManager != null)
-            {
-                gameManager.CollectItem();
-            }
+            if (gameManager != null) gameManager.CollectItem();
             Destroy(other.gameObject);
-        }
-        else if (other.gameObject.tag == "Trap")
-        {
-            PlayerTakeDamage(2);
-            Debug.Log("Player hit a trap! HP now: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
         }
         else if (other.gameObject.tag == "Key")
         {
             hasKey = true;
             Destroy(other.gameObject);
-            Debug.Log("Player picked up the key! HP: " + maxHealth + ", Position: " + transform.position);
+            Debug.Log("Player picked up the key! HP: " + maxHealth);
         }
         else if (other.gameObject.tag == "Door" && hasKey)
         {
@@ -314,114 +241,53 @@ public class Player_Level2 : MonoBehaviour
         else if (other.gameObject.CompareTag("DeathZone"))
         {
             Die();
-            Debug.Log("Player fell into DeathZone! HP: " + maxHealth + ", Position: " + transform.position);
+            Debug.Log("Player fell into DeathZone! HP: " + maxHealth);
         }
     }
 
-    public void PlayerTakeDamage(int damage)
+    public void Player_Level2TakeDamage(int damage)
     {
-        if (maxHealth <= 0 || !gameObject.activeSelf || isDead)
-        {
-            return;
-        }
+        if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
         maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
+        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth);
+        maxHealthText.text = maxHealth.ToString();
 
-        if (maxHealth <= 0)
+        if (maxHealth == 0 && !isDead)
         {
-            Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-            foreach (Enemy enemy in enemies)
-            {
-                enemy.OnPlayerDead();
-            }
-
-            SpamEnemy1[] spamEnemies = Object.FindObjectsByType<SpamEnemy1>(FindObjectsSortMode.None);
-            foreach (SpamEnemy1 spamEnemy in spamEnemies)
-            {
-                spamEnemy.OnPlayerDead();
-            }
-
-            Boss[] bosses = Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
-            foreach (Boss boss in bosses)
-            {
-                boss.OnPlayerDead();
-            }
+            Die();
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void Die()
     {
-        if (attackPoint == null)
+        if (!isDead && maxHealth == 0)
         {
-            return;
+            isDead = true;
+            speed = 0f; // Dừng di chuyển
+            animator.SetTrigger("Die"); // Kích hoạt animation Dead
+            StartCoroutine(DestroyAfterAnimation());
         }
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 
-    void Die()
+    private IEnumerator DestroyAfterAnimation()
     {
-        if (maxHealth <= 0 && gameObject.activeSelf && !isDead)
-        {
-            isDead = true;
-            Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
-
-            speed = 0f;
-            movement = 0f;
-            animator.SetFloat("Walk", 0f);
-            animator.SetBool("Jump", false);
-
-            gameObject.SetActive(false);
-
-            if (gameManager != null)
-            {
-                gameManager.GameOver();
-            }
-        }
-        else if (gameObject.activeSelf && !isDead)
-        {
-            isDead = true;
-            maxHealth = 0;
-            Debug.Log(this.transform.name + " Die from falling - HP: " + maxHealth + ", Position: " + transform.position);
-
-            speed = 0f;
-            movement = 0f;
-            animator.SetFloat("Walk", 0f);
-            animator.SetBool("Jump", false);
-
-            gameObject.SetActive(false);
-
-            if (gameManager != null)
-            {
-                gameManager.GameOver();
-            }
-        }
+        // Chờ animation "Die" hoàn tất (thay 1f bằng độ dài thực tế của animation)
+        yield return new WaitForSeconds(1f);
+        if (gameManager != null) gameManager.GameOver();
+        Destroy(gameObject); // Destroy player sau khi animation kết thúc
     }
 
     public void OpenDoorAndTransition()
     {
-        if (hasKey && gameManager != null && gameManager.IsBossKilled())
+        if (hasKey)
         {
-            if (doorAnimator != null)
-            {
-                doorAnimator.SetTrigger("Open");
-            }
-            else
-            {
-                Debug.LogError("DoorAnimator is null!");
-            }
-
+            if (doorAnimator != null) doorAnimator.SetTrigger("Open");
             if (victoryUI != null)
             {
                 victoryUI.SetActive(true);
                 isWon = true;
-                Debug.Log("Victory UI activated after reaching door with key and defeating boss! HP: " + maxHealth + ", Position: " + transform.position);
+                Debug.Log("Victory UI activated! HP: " + maxHealth);
             }
-            else
-            {
-                Debug.LogError("VictoryUI is null! Please assign VictoryUI in the Inspector!");
-            }
-
             hasKey = false;
         }
     }
@@ -471,10 +337,9 @@ public class Player_Level2 : MonoBehaviour
                 if (ghostSR != null)
                 {
                     ghostSR.sprite = spriteRenderer.sprite;
-                    ghostSR.flipX = !facingRight; // Đảm bảo ghost flip theo hướng nhân vật
+                    ghostSR.flipX = !facingRight;
                     ghostSR.sortingLayerName = "Player";
                     ghostSR.sortingOrder = 9;
-
                     Color ghostColor = ghostSR.color;
                     ghostColor.a = 0.5f;
                     ghostSR.color = ghostColor;

@@ -14,6 +14,8 @@ TagManager:
   - SpamEnemy
   - DeathZone
   - Enemylv2
+  - Player_Level2
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
@@ -25,8 +27,8 @@ TagManager:
   - Player
   - Enemy
   - Boss
-  - 
-  - 
+  - Player_Level2
+  - Enemylv2
   - 
   - 
   - 
