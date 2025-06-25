@@ -23,13 +23,25 @@ public class EnemyLv2 : MonoBehaviour
 
     private bool isAttacking = false;
     public float attackDelay = 1.5f;
+<<<<<<< Updated upstream
     private bool isPlayerDead = false;
+=======
+    private bool isPlayer_Level2Dead = false;
+
+    private bool isInDamageCooldown = false;
+    private float damageCooldownDuration = 0.5f;
+>>>>>>> Stashed changes
 
     void Start()
     {
         if (animator == null) animator = GetComponent<Animator>();
+<<<<<<< Updated upstream
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (player == null) Debug.LogError("Player không tìm thấy! Vui lòng đảm bảo Player có tag 'Player'.");
+=======
+        player_Level2 = GameObject.FindGameObjectWithTag("Player_Level2")?.transform;
+        if (player_Level2 == null) Debug.LogError("Player_Level2 không tìm thấy! Vui lòng đảm bảo Player_Level2 có tag 'Player_Level2'. at " + System.DateTime.Now);
+>>>>>>> Stashed changes
     }
 
     void Update()
@@ -120,7 +132,17 @@ public class EnemyLv2 : MonoBehaviour
         Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
         if (collInfo && collInfo.GetComponent<Player>() != null)
         {
+<<<<<<< Updated upstream
             collInfo.GetComponent<Player>().PlayerTakeDamage(1);
+=======
+            Player_Level2 player = collInfo.GetComponent<Player_Level2>();
+            player.Player_Level2TakeDamage(1);
+            if (player.maxHealth <= 0 && !isPlayer_Level2Dead)
+            {
+                isPlayer_Level2Dead = true;
+                player.OnPlayer_Level2Dead(); // Thông báo khi Player chết
+            }
+>>>>>>> Stashed changes
         }
     }
 
@@ -128,16 +150,39 @@ public class EnemyLv2 : MonoBehaviour
     {
         if (maxHealth <= 0) return;
         maxHealth -= damage;
+<<<<<<< Updated upstream
+=======
+        Debug.Log(this.gameObject.name + " nhận sát thương, HP còn: " + maxHealth + " at " + System.DateTime.Now);
+
+        animator.SetBool("Damage", true);
+        isInDamageCooldown = true;
+        Invoke("EndDamageCooldown", damageCooldownDuration);
+>>>>>>> Stashed changes
     }
 
     public void OnPlayerDead()
     {
+<<<<<<< Updated upstream
         isPlayerDead = true;
         player = null;
         animator.SetBool("PlayerDead", true);
         animator.SetBool("Attack", false);
         StopAllCoroutines();
         Debug.Log($"{gameObject.name} nhận biết Player đã chết, chuyển sang trạng thái Idle.");
+=======
+        isInDamageCooldown = false;
+        animator.SetBool("Damage", false);
+    }
+
+    public void OnPlayer_Level2Dead()
+    {
+        isPlayer_Level2Dead = true;
+        player_Level2 = null;
+        animator.SetBool("Player_Level2Dead", true);
+        animator.SetBool("Attack", false);
+        StopAllCoroutines();
+        Debug.Log($"{gameObject.name} nhận biết Player_Level2 đã chết, chuyển sang trạng thái Idle. at " + System.DateTime.Now);
+>>>>>>> Stashed changes
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -145,7 +190,7 @@ public class EnemyLv2 : MonoBehaviour
         if (other.gameObject.CompareTag("DeathZone"))
         {
             Die();
-            Debug.Log(this.gameObject.name + " fell into DeathZone!");
+            Debug.Log(this.gameObject.name + " fell into DeathZone! at " + System.DateTime.Now);
         }
     }
 
@@ -164,12 +209,17 @@ public class EnemyLv2 : MonoBehaviour
 
     void Die()
     {
-        Debug.Log(this.gameObject.name + " Died");
-        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        Debug.Log(this.gameObject.name + " Died at " + System.DateTime.Now);
+        GameManager_Level2 gameManager = FindFirstObjectByType<GameManager_Level2>();
         if (gameManager != null)
         {
             gameManager.KillEnemy();
+            Debug.Log("KillEnemy() called on GameManager_Level2 at " + System.DateTime.Now);
         }
-        Destroy(this.gameObject);
+        else
+        {
+            Debug.LogError("GameManager_Level2 not found in scene! at " + System.DateTime.Now);
+        }
+        gameObject.SetActive(false); // Thay Destroy bằng SetActive(false)
     }
 }

@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class Player_Level2 : MonoBehaviour
 {
-    public GameObject ghostEffect; // Prefab cho ghost effect
-    public float ghostDelaySeconds = 0.05f; // Tần suất xuất hiện ghost
-    public float ghostLifetime = 0.5f; // Thời gian tồn tại của mỗi ghost
+    public GameObject ghostEffect;
+    public float ghostDelaySeconds = 0.05f;
+    public float ghostLifetime = 0.5f;
     private Coroutine dashEffectCoroutine;
 
     private bool canDash = true;
     private bool isDashing;
-    public float dashingPower = 10f; // Sức mạnh lướt
-    public float dashingTime = 0.2f; // Thời gian lướt
-    public float dashingCooldown = 1f; // Thời gian cooldown
+    public float dashingPower = 10f;
+    public float dashingTime = 0.2f;
+    public float dashingCooldown = 1f;
 
     public GameObject victoryUI;
-    public GameObject gameOverUI;
+    public GameObject gameOverUI; // UI Game Over cho Player
     public int currentCoin = 0;
     public Text currentCoinText;
     public Text maxHealthText;
@@ -50,9 +50,13 @@ public class Player_Level2 : MonoBehaviour
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager_Level2>();
-        if (gameManager == null)
+        if (gameManager == null) 
         {
-            Debug.LogError("GameManager_Level2 không tìm thấy trong scene!");
+            Debug.LogError("GameManager_Level2 không tìm thấy trong scene! Vui lòng thêm GameManager_Level2 vào scene. at " + System.DateTime.Now);
+        }
+        else
+        {
+            Debug.Log("GameManager_Level2 found at " + System.DateTime.Now);
         }
 
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -62,6 +66,7 @@ public class Player_Level2 : MonoBehaviour
             spriteRenderer.sortingOrder = 10;
             Debug.Log("Player SpriteRenderer - SortingLayer: " + spriteRenderer.sortingLayerName + ", SortingOrder: " + spriteRenderer.sortingOrder);
         }
+<<<<<<< Updated upstream
         else
         {
             Debug.LogError("SpriteRenderer không tìm thấy trên Player! Vui lòng thêm SpriteRenderer component.");
@@ -72,18 +77,18 @@ public class Player_Level2 : MonoBehaviour
         {
             Debug.LogError("TrailRenderer không tìm thấy trên Player! Vui lòng thêm TrailRenderer component.");
         }
+=======
+        else Debug.LogError("SpriteRenderer không tìm thấy trên Player!");
+
+        tr = GetComponent<TrailRenderer>();
+        if (tr == null) Debug.LogError("TrailRenderer không tìm thấy trên Player!");
+>>>>>>> Stashed changes
 
         Debug.Log("Player Start - GameObject active: " + gameObject.activeSelf + ", HP: " + maxHealth + ", Position: " + transform.position);
 
         GameObject door = GameObject.FindWithTag("Door");
-        if (door != null)
-        {
-            doorAnimator = door.GetComponent<Animator>();
-        }
-        else
-        {
-            Debug.LogError("Door not found in scene!");
-        }
+        if (door != null) doorAnimator = door.GetComponent<Animator>();
+        else Debug.LogError("Door not found in scene!");
 
         if (victoryUI != null)
         {
@@ -251,6 +256,7 @@ public class Player_Level2 : MonoBehaviour
                 if (enemyScript != null)
                 {
                     enemyScript.EnemyTakeDamage(1);
+<<<<<<< Updated upstream
                     Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Enemy)!");
                 }
 
@@ -266,6 +272,9 @@ public class Player_Level2 : MonoBehaviour
                 {
                     bossScript.TakeDamage(1);
                     Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Boss)!");
+=======
+                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)! at " + System.DateTime.Now);
+>>>>>>> Stashed changes
                 }
             }
         }
@@ -305,7 +314,11 @@ public class Player_Level2 : MonoBehaviour
         {
             hasKey = true;
             Destroy(other.gameObject);
+<<<<<<< Updated upstream
             Debug.Log("Player picked up the key! HP: " + maxHealth + ", Position: " + transform.position);
+=======
+            Debug.Log("Player picked up the key! HP: " + maxHealth + " at " + System.DateTime.Now);
+>>>>>>> Stashed changes
         }
         else if (other.gameObject.tag == "Door" && hasKey)
         {
@@ -313,13 +326,18 @@ public class Player_Level2 : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("DeathZone"))
         {
+            Debug.Log("Entered DeathZone at " + System.DateTime.Now); // Debug
             Die();
+<<<<<<< Updated upstream
             Debug.Log("Player fell into DeathZone! HP: " + maxHealth + ", Position: " + transform.position);
+=======
+>>>>>>> Stashed changes
         }
     }
 
     public void PlayerTakeDamage(int damage)
     {
+<<<<<<< Updated upstream
         if (maxHealth <= 0 || !gameObject.activeSelf || isDead)
         {
             return;
@@ -346,11 +364,23 @@ public class Player_Level2 : MonoBehaviour
             {
                 boss.OnPlayerDead();
             }
+=======
+        if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
+        maxHealth = Mathf.Max(0, maxHealth - damage);
+        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth + " at " + System.DateTime.Now);
+        maxHealthText.text = maxHealth.ToString();
+
+        if (maxHealth == 0 && !isDead)
+        {
+            Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now); // Debug
+            Die();
+>>>>>>> Stashed changes
         }
     }
 
     private void OnDrawGizmosSelected()
     {
+<<<<<<< Updated upstream
         if (attackPoint == null)
         {
             return;
@@ -396,6 +426,37 @@ public class Player_Level2 : MonoBehaviour
                 gameManager.GameOver();
             }
         }
+=======
+        if (!isDead && (maxHealth <= 0 || gameObject.activeSelf))
+        {
+            isDead = true;
+            speed = 0f;
+            movement = 0f;
+            animator.SetFloat("Walk", 0f);
+            animator.SetBool("Jump", false);
+            animator.SetTrigger("Die");
+
+            Debug.Log("Die() called, attempting to show Game Over at " + System.DateTime.Now); // Debug
+            if (gameManager != null)
+            {
+                gameManager.GameOver();
+                Debug.Log("GameOver() called successfully at " + System.DateTime.Now); // Debug
+            }
+            else
+            {
+                Debug.LogError("gameManager is null in Die() at " + System.DateTime.Now);
+            }
+            // Đặt vô hiệu hóa nhân vật sau một frame để đảm bảo UI được hiển thị
+            StartCoroutine(DisablePlayerAfterFrame());
+        }
+    }
+
+    private IEnumerator DisablePlayerAfterFrame()
+    {
+        yield return null; // Chờ một frame
+        gameObject.SetActive(false);
+        Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", Position: " + transform.position + " at " + System.DateTime.Now);
+>>>>>>> Stashed changes
     }
 
     public void OpenDoorAndTransition()
@@ -415,7 +476,11 @@ public class Player_Level2 : MonoBehaviour
             {
                 victoryUI.SetActive(true);
                 isWon = true;
+<<<<<<< Updated upstream
                 Debug.Log("Victory UI activated after reaching door with key and defeating boss! HP: " + maxHealth + ", Position: " + transform.position);
+=======
+                Debug.Log("Victory UI activated! HP: " + maxHealth + " at " + System.DateTime.Now);
+>>>>>>> Stashed changes
             }
             else
             {
@@ -424,6 +489,19 @@ public class Player_Level2 : MonoBehaviour
 
             hasKey = false;
         }
+    }
+
+    // Phương thức mới để thông báo khi Player chết
+    public void OnPlayer_Level2Dead()
+    {
+        Debug.Log("Player_Level2Dead() called at " + System.DateTime.Now);
+        isDead = true; // Đảm bảo trạng thái chết được cập nhật
+        if (gameManager != null)
+        {
+            gameManager.GameOver(); // Gọi GameOver khi nhận thông báo chết
+            Debug.Log("GameOver() called from OnPlayer_Level2Dead at " + System.DateTime.Now);
+        }
+        gameObject.SetActive(false); // Vô hiệu hóa Player
     }
 
     private IEnumerator Dash()

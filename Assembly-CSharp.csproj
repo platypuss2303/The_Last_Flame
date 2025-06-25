@@ -68,6 +68,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerController.cs" />
     <Compile Include="Assets\Scrpits\Enemy.cs" />
     <Compile Include="Assets\Scrpits\Key.cs" />
+    <Compile Include="Assets\Scrpits\Level 2\UIController.cs" />
     <Compile Include="Assets\Scrpits\Boss.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\DampedTracker.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerOnSurface.cs" />
