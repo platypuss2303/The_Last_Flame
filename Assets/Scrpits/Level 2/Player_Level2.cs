@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Player_Level2 : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class Player_Level2 : MonoBehaviour
     public float dashingCooldown = 1f;
 
     public GameObject victoryUI;
-    public GameObject gameOverUI; // UI Game Over cho Player
+    public GameObject gameOverUI;
     public int currentCoin = 0;
     public Text currentCoinText;
     public Text maxHealthText;
@@ -50,7 +49,7 @@ public class Player_Level2 : MonoBehaviour
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager_Level2>();
-        if (gameManager == null) 
+        if (gameManager == null)
         {
             Debug.LogError("GameManager_Level2 không tìm thấy trong scene! Vui lòng thêm GameManager_Level2 vào scene. at " + System.DateTime.Now);
         }
@@ -64,64 +63,30 @@ public class Player_Level2 : MonoBehaviour
         {
             spriteRenderer.sortingLayerName = "Player";
             spriteRenderer.sortingOrder = 10;
-            Debug.Log("Player SpriteRenderer - SortingLayer: " + spriteRenderer.sortingLayerName + ", SortingOrder: " + spriteRenderer.sortingOrder);
         }
-<<<<<<< Updated upstream
-        else
-        {
-            Debug.LogError("SpriteRenderer không tìm thấy trên Player! Vui lòng thêm SpriteRenderer component.");
-        }
-
-        tr = GetComponent<TrailRenderer>();
-        if (tr == null)
-        {
-            Debug.LogError("TrailRenderer không tìm thấy trên Player! Vui lòng thêm TrailRenderer component.");
-        }
-=======
         else Debug.LogError("SpriteRenderer không tìm thấy trên Player!");
 
         tr = GetComponent<TrailRenderer>();
         if (tr == null) Debug.LogError("TrailRenderer không tìm thấy trên Player!");
->>>>>>> Stashed changes
-
-        Debug.Log("Player Start - GameObject active: " + gameObject.activeSelf + ", HP: " + maxHealth + ", Position: " + transform.position);
 
         GameObject door = GameObject.FindWithTag("Door");
         if (door != null) doorAnimator = door.GetComponent<Animator>();
         else Debug.LogError("Door not found in scene!");
 
-        if (victoryUI != null)
-        {
-            victoryUI.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("VictoryUI is not assigned in the Inspector!");
-        }
-
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("GameOverUI is not assigned in the Inspector!");
-        }
+        if (victoryUI != null) victoryUI.SetActive(false);
+        if (gameOverUI != null) gameOverUI.SetActive(false);
     }
 
     void Update()
     {
-        if (isDashing)
-        {
-            return;
-        }
+        if (isDashing) return;
 
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && canDash)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
         }
 
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetKeyDown(KeyCode.Q) && canDash && !isAttackOnCooldown)
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q) && canDash && !isAttackOnCooldown)
         {
             StartCoroutine(Dash());
             animator.SetTrigger("PunchTrigger");
@@ -129,14 +94,7 @@ public class Player_Level2 : MonoBehaviour
             Invoke("EndAttackCooldown", attackCooldownDuration);
         }
 
-        if (!gameObject.activeSelf || isDead)
-        {
-            Debug.LogError("Player is inactive or dead in Update! HP: " + maxHealth);
-            return;
-        }
-
-        string spriteRendererStatus = spriteRenderer != null ? spriteRenderer.enabled.ToString() : "SpriteRenderer is null";
-        Debug.Log("Player Update - GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position + ", SpriteRenderer enabled: " + spriteRendererStatus);
+        if (!gameObject.activeSelf || isDead) return;
 
         if (isWon)
         {
@@ -146,42 +104,38 @@ public class Player_Level2 : MonoBehaviour
             return;
         }
 
-        if (maxHealth <= 0)
-        {
-            Die();
-            return;
-        }
-
         currentCoinText.text = currentCoin.ToString();
         maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 
-        if (movement < 0f && facingRight == true)
+        if (movement < 0f && facingRight)
         {
             transform.eulerAngles = new Vector3(0f, -180f, 0f);
             facingRight = false;
         }
-        else if (movement > 0f && facingRight == false)
+        else if (movement > 0f && !facingRight)
         {
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
             facingRight = true;
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGround == true)
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             Jump();
             animator.SetBool("Jump", true);
             isGround = false;
         }
-        if (Mathf.Abs(movement) > .1f)
+
+        if (Mathf.Abs(movement) > 0.1f)
         {
             animator.SetFloat("Walk", 1f);
         }
-        else if (Mathf.Abs(movement) < 0.1f)
+        else
         {
             animator.SetFloat("Walk", 0f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && !isAttackOnCooldown && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+        if (Input.GetKeyDown(KeyCode.Q) && !isAttackOnCooldown)
         {
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
@@ -198,20 +152,9 @@ public class Player_Level2 : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !isAttackOnCooldown)
         {
             int randomIndex = Random.Range(0, 3);
-
-            if (randomIndex == 0)
-            {
-                animator.SetTrigger("Attack1");
-            }
-            else if (randomIndex == 1)
-            {
-                animator.SetTrigger("Attack2");
-            }
-            else
-            {
-                animator.SetTrigger("Attack3");
-            }
-
+            if (randomIndex == 0) animator.SetTrigger("Attack1");
+            else if (randomIndex == 1) animator.SetTrigger("Attack2");
+            else animator.SetTrigger("Attack3");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
         }
@@ -224,10 +167,7 @@ public class Player_Level2 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDashing)
-        {
-            return;
-        }
+        if (isDashing) return;
 
         if (gameObject.activeSelf && !isDead)
         {
@@ -239,9 +179,7 @@ public class Player_Level2 : MonoBehaviour
     {
         if (rb != null && gameObject.activeSelf && !isDead)
         {
-            Vector2 velocity = rb.linearVelocity;
-            velocity.y = jumpHeight;
-            rb.linearVelocity = velocity;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
         }
     }
 
@@ -252,29 +190,11 @@ public class Player_Level2 : MonoBehaviour
             Collider2D hitInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, targetLayer);
             if (hitInfo)
             {
-                Enemy enemyScript = hitInfo.GetComponent<Enemy>();
+                EnemyLv2 enemyScript = hitInfo.GetComponent<EnemyLv2>();
                 if (enemyScript != null)
                 {
                     enemyScript.EnemyTakeDamage(1);
-<<<<<<< Updated upstream
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Enemy)!");
-                }
-
-                SpamEnemy1 spamEnemyScript = hitInfo.GetComponent<SpamEnemy1>();
-                if (spamEnemyScript != null)
-                {
-                    spamEnemyScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (SpamEnemy1)!");
-                }
-
-                Boss bossScript = hitInfo.GetComponent<Boss>();
-                if (bossScript != null)
-                {
-                    bossScript.TakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Boss)!");
-=======
                     Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)! at " + System.DateTime.Now);
->>>>>>> Stashed changes
                 }
             }
         }
@@ -282,7 +202,7 @@ public class Player_Level2 : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground" && gameObject.activeSelf && !isDead)
+        if (collision.gameObject.tag == "Ground" && !isDead)
         {
             isGround = true;
             animator.SetBool("Jump", false);
@@ -291,34 +211,19 @@ public class Player_Level2 : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!gameObject.activeSelf || isDead)
-        {
-            return;
-        }
+        if (!gameObject.activeSelf || isDead) return;
 
         if (other.gameObject.tag == "Coin")
         {
             currentCoin++;
-            if (gameManager != null)
-            {
-                gameManager.CollectItem();
-            }
+            if (gameManager != null) gameManager.CollectItem();
             Destroy(other.gameObject);
-        }
-        else if (other.gameObject.tag == "Trap")
-        {
-            PlayerTakeDamage(2);
-            Debug.Log("Player hit a trap! HP now: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
         }
         else if (other.gameObject.tag == "Key")
         {
             hasKey = true;
             Destroy(other.gameObject);
-<<<<<<< Updated upstream
-            Debug.Log("Player picked up the key! HP: " + maxHealth + ", Position: " + transform.position);
-=======
             Debug.Log("Player picked up the key! HP: " + maxHealth + " at " + System.DateTime.Now);
->>>>>>> Stashed changes
         }
         else if (other.gameObject.tag == "Door" && hasKey)
         {
@@ -326,45 +231,18 @@ public class Player_Level2 : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("DeathZone"))
         {
-            Debug.Log("Entered DeathZone at " + System.DateTime.Now); // Debug
+            Debug.Log("Entered DeathZone at " + System.DateTime.Now);
             Die();
-<<<<<<< Updated upstream
-            Debug.Log("Player fell into DeathZone! HP: " + maxHealth + ", Position: " + transform.position);
-=======
->>>>>>> Stashed changes
+        }
+        else if (other.gameObject.CompareTag("Checkpoint"))
+        {
+            Checkpoint.lastCheckpointPos = transform.position;
+            Debug.Log("Checkpoint saved at: " + Checkpoint.lastCheckpointPos + " at " + System.DateTime.Now);
         }
     }
 
-    public void PlayerTakeDamage(int damage)
+    public void Player_Level2TakeDamage(int damage)
     {
-<<<<<<< Updated upstream
-        if (maxHealth <= 0 || !gameObject.activeSelf || isDead)
-        {
-            return;
-        }
-        maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
-
-        if (maxHealth <= 0)
-        {
-            Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-            foreach (Enemy enemy in enemies)
-            {
-                enemy.OnPlayerDead();
-            }
-
-            SpamEnemy1[] spamEnemies = Object.FindObjectsByType<SpamEnemy1>(FindObjectsSortMode.None);
-            foreach (SpamEnemy1 spamEnemy in spamEnemies)
-            {
-                spamEnemy.OnPlayerDead();
-            }
-
-            Boss[] bosses = Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
-            foreach (Boss boss in bosses)
-            {
-                boss.OnPlayerDead();
-            }
-=======
         if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
         maxHealth = Mathf.Max(0, maxHealth - damage);
         Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth + " at " + System.DateTime.Now);
@@ -372,21 +250,9 @@ public class Player_Level2 : MonoBehaviour
 
         if (maxHealth == 0 && !isDead)
         {
-            Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now); // Debug
+            Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now);
             Die();
->>>>>>> Stashed changes
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-<<<<<<< Updated upstream
-        if (attackPoint == null)
-        {
-            return;
-        }
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 
     void Die()
@@ -426,83 +292,29 @@ public class Player_Level2 : MonoBehaviour
                 gameManager.GameOver();
             }
         }
-=======
-        if (!isDead && (maxHealth <= 0 || gameObject.activeSelf))
-        {
-            isDead = true;
-            speed = 0f;
-            movement = 0f;
-            animator.SetFloat("Walk", 0f);
-            animator.SetBool("Jump", false);
-            animator.SetTrigger("Die");
-
-            Debug.Log("Die() called, attempting to show Game Over at " + System.DateTime.Now); // Debug
-            if (gameManager != null)
-            {
-                gameManager.GameOver();
-                Debug.Log("GameOver() called successfully at " + System.DateTime.Now); // Debug
-            }
-            else
-            {
-                Debug.LogError("gameManager is null in Die() at " + System.DateTime.Now);
-            }
-            // Đặt vô hiệu hóa nhân vật sau một frame để đảm bảo UI được hiển thị
-            StartCoroutine(DisablePlayerAfterFrame());
-        }
-    }
-
-    private IEnumerator DisablePlayerAfterFrame()
-    {
-        yield return null; // Chờ một frame
-        gameObject.SetActive(false);
-        Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", Position: " + transform.position + " at " + System.DateTime.Now);
->>>>>>> Stashed changes
     }
 
     public void OpenDoorAndTransition()
     {
-        if (hasKey && gameManager != null && gameManager.IsBossKilled())
+        if (hasKey)
         {
-            if (doorAnimator != null)
-            {
-                doorAnimator.SetTrigger("Open");
-            }
-            else
-            {
-                Debug.LogError("DoorAnimator is null!");
-            }
-
+            if (doorAnimator != null) doorAnimator.SetTrigger("Open");
             if (victoryUI != null)
             {
                 victoryUI.SetActive(true);
                 isWon = true;
-<<<<<<< Updated upstream
-                Debug.Log("Victory UI activated after reaching door with key and defeating boss! HP: " + maxHealth + ", Position: " + transform.position);
-=======
                 Debug.Log("Victory UI activated! HP: " + maxHealth + " at " + System.DateTime.Now);
->>>>>>> Stashed changes
             }
-            else
-            {
-                Debug.LogError("VictoryUI is null! Please assign VictoryUI in the Inspector!");
-            }
-
             hasKey = false;
         }
     }
 
-    // Phương thức mới để thông báo khi Player chết
-    public void OnPlayer_Level2Dead()
+    public void ResetDeadState()
     {
-        Debug.Log("Player_Level2Dead() called at " + System.DateTime.Now);
-        isDead = true; // Đảm bảo trạng thái chết được cập nhật
-        if (gameManager != null)
-        {
-            gameManager.GameOver(); // Gọi GameOver khi nhận thông báo chết
-            Debug.Log("GameOver() called from OnPlayer_Level2Dead at " + System.DateTime.Now);
-        }
-        gameObject.SetActive(false); // Vô hiệu hóa Player
+        isDead = false;
     }
+
+ 
 
     private IEnumerator Dash()
     {
@@ -549,10 +361,9 @@ public class Player_Level2 : MonoBehaviour
                 if (ghostSR != null)
                 {
                     ghostSR.sprite = spriteRenderer.sprite;
-                    ghostSR.flipX = !facingRight; // Đảm bảo ghost flip theo hướng nhân vật
+                    ghostSR.flipX = !facingRight;
                     ghostSR.sortingLayerName = "Player";
                     ghostSR.sortingOrder = 9;
-
                     Color ghostColor = ghostSR.color;
                     ghostColor.a = 0.5f;
                     ghostSR.color = ghostColor;

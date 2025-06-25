@@ -966,7 +966,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4734877230681251985, guid: 656988622fac6384e951cff902af3b19, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4814642756197370416, guid: 656988622fac6384e951cff902af3b19, type: 3}
       propertyPath: m_Pivot.x
@@ -2086,7 +2086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa523d14ec750743a99d9c3fecada48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 3
+  maxHealth: 10
   animator: {fileID: 494751517}
   player_Level2: {fileID: 5348486309538916801}
   attackRange: 10
@@ -2094,7 +2094,7 @@ MonoBehaviour:
   chaseSpeed: 3.5
   retrieveDistance: 2.5
   detectPoint: {fileID: 316756393}
-  distance: 0
+  distance: 1.2
   detectLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -98429,7 +98429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1961575612
 RectTransform:
   m_ObjectHideFlags: 0
@@ -99335,10 +99335,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1983659146766520861, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: victoryUI
       value: 
@@ -99355,20 +99351,8 @@ PrefabInstance:
       propertyPath: currentCoinText
       value: 
       objectReference: {fileID: 246946569}
-    - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
-      propertyPath: targetLayer.m_Bits
-      value: 2048
-      objectReference: {fileID: 0}
     - target: {fileID: 5596901071799879355, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: m_Name
-      value: Player_Level2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5596901071799879355, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5596901071799879355, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
-      propertyPath: m_TagString
       value: Player_Level2
       objectReference: {fileID: 0}
     - target: {fileID: 8220040375079950973, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}

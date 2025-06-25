@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8616247043138613684}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
@@ -46,9 +46,9 @@ GameObject:
   - component: {fileID: 2175587386882055477}
   - component: {fileID: 8978555573924908483}
   - component: {fileID: 5488404883739886316}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: Player_Level2
-  m_TagString: Player
+  m_TagString: Player_Level2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,8 +87,8 @@ MonoBehaviour:
   dashingPower: 10
   dashingTime: 0.2
   dashingCooldown: 1
-  victoryUI: {fileID: 3202566647011804969, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
-  gameOverUI: {fileID: 3202566647011804969, guid: 656988622fac6384e951cff902af3b19, type: 3}
+  victoryUI: {fileID: 0}
+  gameOverUI: {fileID: 0}
   currentCoin: 0
   currentCoinText: {fileID: 0}
   maxHealthText: {fileID: 0}
@@ -102,7 +102,7 @@ MonoBehaviour:
   attackRadius: 1.5
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   hasKey: 0
   transitionImage: {fileID: 0}
 --- !u!212 &3899899439794900204

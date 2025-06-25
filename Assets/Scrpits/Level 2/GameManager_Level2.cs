@@ -18,7 +18,7 @@ public class GameManager_Level2 : MonoBehaviour
     public Color cleanWaterColor = new Color(0f, 0.6f, 0.8f);
     public Color dayColor = new Color(1f, 0.95f, 0.8f);
 
-    public GameObject gameOverScreen; // Thay gameOverUI bằng gameOverScreen như trong màn 1
+    public GameObject gameOverScreen;
     public GameObject victoryUI;
 
     private SpriteRenderer[] seaRenderers;
@@ -28,7 +28,7 @@ public class GameManager_Level2 : MonoBehaviour
     private bool hasChangedColor = false;
     private bool hasWaterCleaned = false;
 
-    private bool isGameOver = false; // Thêm biến kiểm tra như trong màn 1
+    private bool isGameOver = false;
 
     void Start()
     {
@@ -88,7 +88,6 @@ public class GameManager_Level2 : MonoBehaviour
         {
             Pause();
         }
-
     }
 
     public void CollectItem() { collectedItems++; }
@@ -97,7 +96,6 @@ public class GameManager_Level2 : MonoBehaviour
 
     public bool IsBossKilled() { return isBossKilled; }
 
-    // Logic GameOver từ màn 1
     public void GameOver()
     {
         if (isGameOver) return;
@@ -107,20 +105,16 @@ public class GameManager_Level2 : MonoBehaviour
 
         if (gameOverScreen != null)
         {
-<<<<<<< Updated upstream
-            gameOverUI.SetActive(true);
-            Debug.Log("Game Over UI activated!");
-=======
             gameOverScreen.SetActive(true);
             Time.timeScale = 1f;
             Debug.Log("Game Over screen activated at " + System.DateTime.Now);
->>>>>>> Stashed changes
         }
         else
         {
             Debug.LogWarning("GameOverScreen is not assigned in GameManager!");
         }
     }
+
     public void Victory()
     {
         if (victoryUI != null)
@@ -164,7 +158,6 @@ public class GameManager_Level2 : MonoBehaviour
         }
     }
 
-
     public void Pause()
     {
         if (UIController.Instance != null && UIController.Instance.pausePanel != null)
@@ -172,12 +165,12 @@ public class GameManager_Level2 : MonoBehaviour
             if (UIController.Instance.pausePanel.activeSelf == false)
             {
                 UIController.Instance.pausePanel.SetActive(true);
-                Time.timeScale = 0; // Tạm dừng game
+                Time.timeScale = 0;
             }
             else
             {
                 UIController.Instance.pausePanel.SetActive(false);
-                Time.timeScale = 1; // Tiếp tục game
+                Time.timeScale = 1;
             }
         }
         else
@@ -192,13 +185,11 @@ public class GameManager_Level2 : MonoBehaviour
         Time.timeScale = 1;
         if (UIController.Instance != null && UIController.Instance.pausePanel != null)
         {
-            UIController.Instance.pausePanel.SetActive(false); // Ẩn pause panel
-                                                               // (Tùy chọn) Destroy(UIController.Instance.gameObject); // Hủy hoàn toàn nếu cần
+            UIController.Instance.pausePanel.SetActive(false);
         }
         if (seaParent != null) seaParent.SetActive(false);
         if (skyParent != null) skyParent.SetActive(false);
         if (cloudParent != null) cloudParent.SetActive(false);
-        SceneManager.LoadScene("Menu"); // Thay "Menu" bằng tên scene menu
+        SceneManager.LoadScene("Menu");
     }
-
 }
