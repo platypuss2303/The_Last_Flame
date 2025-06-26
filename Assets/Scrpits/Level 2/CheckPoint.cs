@@ -1,22 +1,15 @@
 ﻿using UnityEngine;
 
-public class CheckPoint : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
-    private Respawn respawn;
-    private BoxCollider2D checkPointCollider;
+    public static Vector2 lastCheckpointPos; // Định nghĩa duy nhất
 
-    void Awake()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        checkPointCollider = GetComponent<BoxCollider2D>();
-        respawn = GameObject.FindGameObjectWithTag("Respawn").GetComponent<Respawn>();
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Player_Level2"))
+        if (other.CompareTag("Player"))
         {
-            respawn.respawnPoint = this.gameObject; // Cập nhật checkpoint gần nhất
-            checkPointCollider.enabled = false; // Vô hiệu hóa collider sau khi kích hoạt
+            lastCheckpointPos = transform.position;
+            Debug.Log("Checkpoint reached at: " + lastCheckpointPos + " at " + System.DateTime.Now);
         }
     }
 }

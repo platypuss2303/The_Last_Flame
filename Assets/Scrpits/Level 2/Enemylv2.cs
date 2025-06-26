@@ -42,10 +42,11 @@ public class EnemyLv2 : MonoBehaviour
 
         if (isPlayer_Level2Dead || player_Level2 == null || !player_Level2.gameObject.activeSelf)
         {
-            animator.SetBool("Player_Level2Dead", true);
+            animator.SetBool("PlayerDead", true); // Sử dụng tham số PlayerDead từ Animator
             return;
         }
 
+        animator.SetBool("PlayerDead", false); // Đặt lại khi player còn sống
         float distanceToPlayer_Level2 = Vector2.Distance(transform.position, player_Level2.position);
         player_Level2InRange = distanceToPlayer_Level2 <= attackRange;
 
@@ -121,7 +122,7 @@ public class EnemyLv2 : MonoBehaviour
 
     public void Attack()
     {
-        Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
+        Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer); // Sửa thành OverlapCircle
         if (collInfo && collInfo.GetComponent<Player_Level2>() != null)
         {
             collInfo.GetComponent<Player_Level2>().Player_Level2TakeDamage(1);
@@ -150,10 +151,18 @@ public class EnemyLv2 : MonoBehaviour
     {
         isPlayer_Level2Dead = true;
         player_Level2 = null;
-        animator.SetBool("Player_Level2Dead", true);
-        animator.SetBool("Attack", false);
+        animator.SetBool("PlayerDead", true); // Kích hoạt trạng thái PlayerDead
+        StartCoroutine(TransitionToIdleAfterDelay(1.0f)); // Chuyển về Idle sau delay
         StopAllCoroutines();
         Debug.Log($"{gameObject.name} nhận biết Player_Level2 đã chết, chuyển sang trạng thái Idle.");
+    }
+
+    private IEnumerator TransitionToIdleAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay); // Đợi animation Player_Level2Dead hoàn tất
+        animator.SetBool("PlayerDead", false); // Tắt điều kiện PlayerDead
+        animator.SetBool("Attack", false); // Đảm bảo Attack bị tắt
+        // Trạng thái sẽ tự động chuyển về Enemy_Idle nhờ điều kiện Exit Time
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -179,6 +188,7 @@ public class EnemyLv2 : MonoBehaviour
     }
 
     void Die()
+
     {
         Debug.Log(this.gameObject.name + " Died");
         GameManager gameManager = FindFirstObjectByType<GameManager>();

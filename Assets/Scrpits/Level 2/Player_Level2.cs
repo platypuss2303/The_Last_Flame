@@ -1,20 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Player_Level2 : MonoBehaviour
 {
-    public GameObject ghostEffect; // Prefab cho ghost effect
-    public float ghostDelaySeconds = 0.05f; // Tần suất xuất hiện ghost
-    public float ghostLifetime = 0.5f; // Thời gian tồn tại của mỗi ghost
+    public GameObject ghostEffect;
+    public float ghostDelaySeconds = 0.05f;
+    public float ghostLifetime = 0.5f;
     private Coroutine dashEffectCoroutine;
 
     private bool canDash = true;
     private bool isDashing;
-    public float dashingPower = 10f; // Sức mạnh lướt
-    public float dashingTime = 0.2f; // Thời gian lướt
-    public float dashingCooldown = 1f; // Thời gian cooldown
+    public float dashingPower = 10f;
+    public float dashingTime = 0.2f;
+    public float dashingCooldown = 1f;
 
     public GameObject victoryUI;
     public GameObject gameOverUI;
@@ -52,7 +51,11 @@ public class Player_Level2 : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager_Level2>();
         if (gameManager == null)
         {
-            Debug.LogError("GameManager_Level2 không tìm thấy trong scene!");
+            Debug.LogError("GameManager_Level2 không tìm thấy trong scene! Vui lòng thêm GameManager_Level2 vào scene. at " + System.DateTime.Now);
+        }
+        else
+        {
+            Debug.Log("GameManager_Level2 found at " + System.DateTime.Now);
         }
 
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -61,26 +64,14 @@ public class Player_Level2 : MonoBehaviour
             spriteRenderer.sortingLayerName = "Player";
             spriteRenderer.sortingOrder = 10;
         }
-        else
-        {
-            Debug.LogError("SpriteRenderer không tìm thấy trên Player!");
-        }
+        else Debug.LogError("SpriteRenderer không tìm thấy trên Player!");
 
         tr = GetComponent<TrailRenderer>();
-        if (tr == null)
-        {
-            Debug.LogError("TrailRenderer không tìm thấy trên Player!");
-        }
+        if (tr == null) Debug.LogError("TrailRenderer không tìm thấy trên Player!");
 
         GameObject door = GameObject.FindWithTag("Door");
-        if (door != null)
-        {
-            doorAnimator = door.GetComponent<Animator>();
-        }
-        else
-        {
-            Debug.LogError("Door not found in scene!");
-        }
+        if (door != null) doorAnimator = door.GetComponent<Animator>();
+        else Debug.LogError("Door not found in scene!");
 
         if (victoryUI != null) victoryUI.SetActive(false);
         if (gameOverUI != null) gameOverUI.SetActive(false);
@@ -102,7 +93,6 @@ public class Player_Level2 : MonoBehaviour
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
         }
-
         if (!gameObject.activeSelf || isDead) return;
 
         if (isWon)
@@ -203,7 +193,7 @@ public class Player_Level2 : MonoBehaviour
                 if (enemyScript != null)
                 {
                     enemyScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)!");
+                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)! at " + System.DateTime.Now);
                 }
             }
         }
@@ -232,7 +222,7 @@ public class Player_Level2 : MonoBehaviour
         {
             hasKey = true;
             Destroy(other.gameObject);
-            Debug.Log("Player picked up the key! HP: " + maxHealth);
+            Debug.Log("Player picked up the key! HP: " + maxHealth + " at " + System.DateTime.Now);
         }
         else if (other.gameObject.tag == "Door" && hasKey)
         {
@@ -240,8 +230,13 @@ public class Player_Level2 : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("DeathZone"))
         {
+            Debug.Log("Entered DeathZone at " + System.DateTime.Now);
             Die();
-            Debug.Log("Player fell into DeathZone! HP: " + maxHealth);
+        }
+        else if (other.gameObject.CompareTag("Checkpoint"))
+        {
+            Checkpoint.lastCheckpointPos = transform.position;
+            Debug.Log("Checkpoint saved at: " + Checkpoint.lastCheckpointPos + " at " + System.DateTime.Now);
         }
     }
 
@@ -249,32 +244,53 @@ public class Player_Level2 : MonoBehaviour
     {
         if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
         maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth);
+        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth + " at " + System.DateTime.Now);
         maxHealthText.text = maxHealth.ToString();
 
         if (maxHealth == 0 && !isDead)
         {
+            Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now);
             Die();
         }
     }
 
-    private void Die()
+    void Die()
     {
-        if (!isDead && maxHealth == 0)
+        if (maxHealth <= 0 && gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            speed = 0f; // Dừng di chuyển
-            animator.SetTrigger("Die"); // Kích hoạt animation Dead
-            StartCoroutine(DestroyAfterAnimation());
-        }
-    }
+            Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
 
-    private IEnumerator DestroyAfterAnimation()
-    {
-        // Chờ animation "Die" hoàn tất (thay 1f bằng độ dài thực tế của animation)
-        yield return new WaitForSeconds(1f);
-        if (gameManager != null) gameManager.GameOver();
-        Destroy(gameObject); // Destroy player sau khi animation kết thúc
+            speed = 0f;
+            movement = 0f;
+            animator.SetFloat("Walk", 0f);
+            animator.SetBool("Jump", false);
+
+            gameObject.SetActive(false);
+
+            if (gameManager != null)
+            {
+                gameManager.GameOver();
+            }
+        }
+        else if (gameObject.activeSelf && !isDead)
+        {
+            isDead = true;
+            maxHealth = 0;
+            Debug.Log(this.transform.name + " Die from falling - HP: " + maxHealth + ", Position: " + transform.position);
+
+            speed = 0f;
+            movement = 0f;
+            animator.SetFloat("Walk", 0f);
+            animator.SetBool("Jump", false);
+
+            gameObject.SetActive(false);
+
+            if (gameManager != null)
+            {
+                gameManager.GameOver();
+            }
+        }
     }
 
     public void OpenDoorAndTransition()
@@ -286,11 +302,18 @@ public class Player_Level2 : MonoBehaviour
             {
                 victoryUI.SetActive(true);
                 isWon = true;
-                Debug.Log("Victory UI activated! HP: " + maxHealth);
+                Debug.Log("Victory UI activated! HP: " + maxHealth + " at " + System.DateTime.Now);
             }
             hasKey = false;
         }
     }
+
+    public void ResetDeadState()
+    {
+        isDead = false;
+    }
+
+
 
     private IEnumerator Dash()
     {
