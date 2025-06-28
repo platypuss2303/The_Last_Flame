@@ -76,6 +76,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerOnSurface.cs" />
     <Compile Include="Assets\Scrpits\InfiniteBackground.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\AimTargetManager.cs" />
+    <Compile Include="Assets\Scrpits\Level 2\Mush.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\2D Samples\2D Platformer\GameControl.cs" />
     <Compile Include="Assets\Scrpits\Level 2\Respawn.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SpawnInRadius.cs" />

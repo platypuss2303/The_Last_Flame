@@ -16,6 +16,8 @@ TagManager:
   - Enemylv2
   - Player_Level2
   - CheckPoint
+  - Mushlv2
+  - Mush
   layers:
   - Default
   - TransparentFX
@@ -29,8 +31,8 @@ TagManager:
   - Boss
   - Player_Level2
   - Enemylv2
-  - 
-  - 
+  - Mushlv2
+  - Mush
   - 
   - 
   - 

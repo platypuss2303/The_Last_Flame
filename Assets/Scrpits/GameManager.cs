@@ -127,6 +127,8 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Current State: collectedItems={collectedItems}, enemiesKilled={enemiesKilled}, isBossKilled={isBossKilled}, hasKeyAppeared={hasKeyAppeared}, hasChangedColor={hasChangedColor} at " + System.DateTime.Now);
     }
 
+
+
     public void KillEnemy()
     {
         enemiesKilled++;

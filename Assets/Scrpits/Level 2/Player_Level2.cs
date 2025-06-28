@@ -195,6 +195,13 @@ public class Player_Level2 : MonoBehaviour
                     enemyScript.EnemyTakeDamage(1);
                     Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)! at " + System.DateTime.Now);
                 }
+
+                Mush mushScript = hitInfo.GetComponent<Mush>();
+                if (mushScript != null)
+                {
+                    mushScript.EnemyTakeDamage(1);
+                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (MushLv2)! at " + System.DateTime.Now);
+                }
             }
         }
     }
