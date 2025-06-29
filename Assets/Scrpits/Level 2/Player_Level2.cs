@@ -189,19 +189,21 @@ public class Player_Level2 : MonoBehaviour
             Collider2D hitInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, targetLayer);
             if (hitInfo)
             {
-                EnemyLv2 enemyScript = hitInfo.GetComponent<EnemyLv2>();
-                if (enemyScript != null)
+                // Kiểm tra bất kỳ component nào có phương thức EnemyTakeDamage
+                MonoBehaviour enemy = hitInfo.GetComponent<MonoBehaviour>();
+                if (enemy != null)
                 {
-                    enemyScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (EnemyLv2)! at " + System.DateTime.Now);
+                    System.Reflection.MethodInfo method = enemy.GetType().GetMethod("EnemyTakeDamage");
+                    if (method != null)
+                    {
+                        method.Invoke(enemy, new object[] { 1 }); // Gọi EnemyTakeDamage với damage = 1
+                        Debug.Log("Player attacked " + hitInfo.gameObject.name + " with EnemyTakeDamage! at " + System.DateTime.Now);
+                    }
                 }
-
-                Mush mushScript = hitInfo.GetComponent<Mush>();
-                if (mushScript != null)
-                {
-                    mushScript.EnemyTakeDamage(1);
-                    Debug.Log("Player attacked " + hitInfo.gameObject.name + " (MushLv2)! at " + System.DateTime.Now);
-                }
+            }
+            else
+            {
+                Debug.Log("No enemy detected at attackPoint: " + attackPoint.position + " with radius " + attackRadius + " at " + System.DateTime.Now);
             }
         }
     }
@@ -240,11 +242,7 @@ public class Player_Level2 : MonoBehaviour
             Debug.Log("Entered DeathZone at " + System.DateTime.Now);
             Die();
         }
-        else if (other.gameObject.CompareTag("Checkpoint"))
-        {
-            Checkpoint.lastCheckpointPos = transform.position;
-            Debug.Log("Checkpoint saved at: " + Checkpoint.lastCheckpointPos + " at " + System.DateTime.Now);
-        }
+       
     }
 
     public void Player_Level2TakeDamage(int damage)
@@ -319,8 +317,6 @@ public class Player_Level2 : MonoBehaviour
     {
         isDead = false;
     }
-
-
 
     private IEnumerator Dash()
     {

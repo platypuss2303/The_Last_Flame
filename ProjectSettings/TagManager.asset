@@ -18,6 +18,7 @@ TagManager:
   - CheckPoint
   - Mushlv2
   - Mush
+  - Bat
   layers:
   - Default
   - TransparentFX
