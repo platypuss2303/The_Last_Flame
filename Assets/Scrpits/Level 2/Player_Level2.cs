@@ -103,7 +103,7 @@ public class Player_Level2 : MonoBehaviour
             return;
         }
 
-        currentCoinText.text = currentCoin.ToString();
+    
         maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 
@@ -189,14 +189,14 @@ public class Player_Level2 : MonoBehaviour
             Collider2D hitInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, targetLayer);
             if (hitInfo)
             {
-                // Kiểm tra bất kỳ component nào có phương thức EnemyTakeDamage
+                
                 MonoBehaviour enemy = hitInfo.GetComponent<MonoBehaviour>();
                 if (enemy != null)
                 {
                     System.Reflection.MethodInfo method = enemy.GetType().GetMethod("EnemyTakeDamage");
                     if (method != null)
                     {
-                        method.Invoke(enemy, new object[] { 1 }); // Gọi EnemyTakeDamage với damage = 1
+                        method.Invoke(enemy, new object[] { 1 }); 
                         Debug.Log("Player attacked " + hitInfo.gameObject.name + " with EnemyTakeDamage! at " + System.DateTime.Now);
                     }
                 }
