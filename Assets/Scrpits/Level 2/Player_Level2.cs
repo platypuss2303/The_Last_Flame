@@ -103,7 +103,7 @@ public class Player_Level2 : MonoBehaviour
             return;
         }
 
-    
+        currentCoinText.text = currentCoin.ToString();
         maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 

@@ -97,6 +97,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ShotQualityBasedOnSplineCartPosition.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerAnimator.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\AimCameraRig.cs" />
+    <Compile Include="Assets\Scrpits\Level 2\Bosslv2.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RandomizedDollySpeed.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\ReparentPlayerToSurface.cs" />
     <Compile Include="Assets\Scrpits\Level 2\Player_Level2.cs" />
