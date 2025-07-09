@@ -3827,6 +3827,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &818701967 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 641721086056288345, guid: 0a25fdceb2f13db4581727838318e4e8, type: 3}
+  m_PrefabInstance: {fileID: 967329032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &835421639
 GameObject:
   m_ObjectHideFlags: 0
@@ -4394,7 +4405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2766573111643791808, guid: 0a25fdceb2f13db4581727838318e4e8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -10.448853
+      value: -10.448975
       objectReference: {fileID: 0}
     - target: {fileID: 2766573111643791808, guid: 0a25fdceb2f13db4581727838318e4e8, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -87241,12 +87252,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -91172,6 +91183,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2113918690 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2565515966149359142, guid: 0a25fdceb2f13db4581727838318e4e8, type: 3}
+  m_PrefabInstance: {fileID: 967329032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2121708748
 GameObject:
   m_ObjectHideFlags: 0
@@ -91472,14 +91494,22 @@ PrefabInstance:
     - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: maxHealthText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 818701967}
     - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: currentCoinText
+      value: 
+      objectReference: {fileID: 2113918690}
+    - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
+      propertyPath: transitionImage
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5223141983332893471, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: targetLayer.m_Bits
       value: 2048
+      objectReference: {fileID: 0}
+    - target: {fileID: 5488404883739886316, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
+      propertyPath: m_PreviewTimeScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5596901071799879355, guid: e3e47e6d5fe1d0044b360496ce0a85e0, type: 3}
       propertyPath: m_Name
