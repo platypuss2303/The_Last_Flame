@@ -3,22 +3,22 @@ using System.Collections;
 
 public class Bat : MonoBehaviour
 {
-    public float flySpeed = 2.5f; // Tốc độ bay
-    public float chaseSpeed = 3.5f; // Tốc độ rượt đuổi
-    public float attackRange = 10f; // Phạm vi phát hiện
-    public float attackRadius = 2f; // Phạm vi tấn công
-    public Transform player_Level2; // Tham chiếu đến người chơi
-    public Transform attackPoint; // Điểm tấn công
-    public LayerMask attackLayer; // Layer của người chơi
-    public Transform startingPoint; // Điểm bắt đầu
-    public int maxHealth = 3; // Máu của Bat
-    [HideInInspector] public bool facingLeft = false; // Hướng quay, mặc định mặt phải, public để debug
-    private Animator animator; // Animator
-    private bool isAttacking = false; // Trạng thái tấn công
-    public float attackDelay = 1.5f; // Thời gian delay giữa các lần tấn công
-    private bool isInDamageCooldown = false; // Trạng thái cooldown khi nhận sát thương
-    private float damageCooldownDuration = 0.5f; // Thời gian cooldown
-    public bool chase = false; // Trạng thái rượt đuổi
+    public float flySpeed = 2.5f; 
+    public float chaseSpeed = 3.5f; 
+    public float attackRange = 10f; 
+    public float attackRadius = 2f; 
+    public Transform player_Level2; 
+    public Transform attackPoint; 
+    public LayerMask attackLayer; 
+    public Transform startingPoint; 
+    public int maxHealth = 3; 
+    [HideInInspector] public bool facingLeft = false; 
+    private Animator animator;
+    private bool isAttacking = false; 
+    public float attackDelay = 1.5f; 
+    private bool isInDamageCooldown = false; 
+    private float damageCooldownDuration = 0.5f; 
+    public bool chase = false; 
 
     void Start()
     {
@@ -72,8 +72,8 @@ public class Bat : MonoBehaviour
 
     void UpdateFacingDirection(float moveDirection)
     {
-        // Xoay sprite dựa trên hướng di chuyển thực tế, cập nhật ngay lập tức
-        if (moveDirection > 0.01f && facingLeft) // Di chuyển sang phải
+        
+        if (moveDirection > 0.01f && facingLeft) 
         {
             transform.localScale = new Vector3(1, 1, 1); // Mặt phải
             facingLeft = false;
