@@ -13,11 +13,11 @@ public class Sound : MonoBehaviour
     public AudioSource bossAudioSource;
 
     private string menuSceneName = "Menu";
-    private string[] gameScenes = { "Level1", "Level 2" }; // Danh sách các scene game
+    private string[] gameScenes = { "Level1", "Level 2" }; 
 
     void Start()
     {
-        // Đảm bảo âm thanh nền lặp lại
+       
         if (menuBackgroundAudioSource != null)
         {
             menuBackgroundAudioSource.loop = true;
