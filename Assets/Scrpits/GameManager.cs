@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
-using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -118,6 +119,12 @@ public class GameManager : MonoBehaviour
             hasChangedColor = true;
             hasKeyAppeared = true;
         }
+
+        // Thêm logic pause khi nhấn Esc
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause();
+        }
     }
 
     public void CollectItem()
@@ -126,8 +133,6 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Collected Items: {collectedItems}/{totalItems} at " + System.DateTime.Now);
         Debug.Log($"Current State: collectedItems={collectedItems}, enemiesKilled={enemiesKilled}, isBossKilled={isBossKilled}, hasKeyAppeared={hasKeyAppeared}, hasChangedColor={hasChangedColor} at " + System.DateTime.Now);
     }
-
-
 
     public void KillEnemy()
     {
@@ -400,5 +405,44 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("GameOverScreen is not assigned in GameManager!");
         }
+    }
+
+    public void Pause()
+    {
+        if (UIControllerlv1.Instance != null && UIControllerlv1.Instance.pausePanel != null)
+        {
+            if (UIControllerlv1.Instance.pausePanel.activeSelf == false)
+            {
+                UIControllerlv1.Instance.pausePanel.SetActive(true);
+                Time.timeScale = 0;
+                Debug.Log("Game paused at " + System.DateTime.Now);
+            }
+            else
+            {
+                UIControllerlv1.Instance.pausePanel.SetActive(false);
+                Time.timeScale = 1;
+                Debug.Log("Game unpaused at " + System.DateTime.Now);
+            }
+        }
+        else
+        {
+            Debug.LogError("UIControllerlv1.Instance or pausePanel is not assigned!");
+        }
+    }
+
+    // Thêm phương thức ReturnToMenu giống Level 2
+    public void ReturnToMenu()
+    {
+        Debug.Log("Returning to Menu scene at " + System.DateTime.Now);
+        Time.timeScale = 1;
+        if (UIControllerlv1.Instance != null && UIControllerlv1.Instance.pausePanel != null)
+        {
+            UIControllerlv1.Instance.pausePanel.SetActive(false);
+        }
+        if (backgroundDay != null) backgroundDay.SetActive(false);
+        if (backTitle != null) backTitle.SetActive(false);
+        if (decorations != null) decorations.SetActive(false);
+        if (key != null) key.SetActive(false);
+        SceneManager.LoadScene("Menu");
     }
 }

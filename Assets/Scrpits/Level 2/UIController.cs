@@ -6,17 +6,17 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance { get; private set; }
     public GameObject pausePanel;
-
+        
     void Awake()
     {
-        // Chỉ gán Instance, không dùng DontDestroyOnLoad
+        
         if (Instance == null)
         {
             Instance = this;
         }
         else if (Instance != this)
         {
-            Destroy(gameObject); // Hủy instance trùng lặp
+            Destroy(gameObject); 
         }
     }
 
