@@ -25,37 +25,45 @@ public class EnemyLv2 : MonoBehaviour
     public float attackDelay = 1.5f;
     private bool isPlayer_Level2Dead = false;
 
-    // Biến kiểm soát thời gian sau khi nhận sát thương, giống Boss
     private bool isInDamageCooldown = false;
-    private float damageCooldownDuration = 0.5f; // Thời gian animation "Damage" chạy
+    private float damageCooldownDuration = 0.5f;
+
+    private Rigidbody2D rb;
+    private bool isTurning = false; // Thêm flag để tạm dừng di chuyển khi quay
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D không được gắn vào EnemyLv2!");
+            return;
+        }
         if (animator == null) animator = GetComponent<Animator>();
         player_Level2 = GameObject.FindGameObjectWithTag("Player_Level2")?.transform;
-        if (player_Level2 == null) Debug.LogError("Player_Level2 không tìm thấy! Vui lòng đảm bảo Player_Level2 có tag 'Player_Level2'.");
+        if (player_Level2 == null) Debug.LogError("Player_Level2 không tìm thấy!");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (maxHealth <= 0) Die();
 
         if (isPlayer_Level2Dead || player_Level2 == null || !player_Level2.gameObject.activeSelf)
         {
-            animator.SetBool("PlayerDead", true); // Sử dụng tham số PlayerDead từ Animator
+            animator.SetBool("PlayerDead", true);
             return;
         }
 
-        animator.SetBool("PlayerDead", false); // Đặt lại khi player còn sống
+        animator.SetBool("PlayerDead", false);
         float distanceToPlayer_Level2 = Vector2.Distance(transform.position, player_Level2.position);
         player_Level2InRange = distanceToPlayer_Level2 <= attackRange;
 
-        if (!player_Level2InRange)
+        if (!player_Level2InRange && !isTurning)
         {
             animator.SetBool("Attack", false);
             Patrol();
         }
-        else
+        else if (!isTurning)
         {
             FacePlayer_Level2();
             if (distanceToPlayer_Level2 > retrieveDistance && !isInDamageCooldown)
@@ -72,57 +80,56 @@ public class EnemyLv2 : MonoBehaviour
 
     void Patrol()
     {
-        transform.Translate(Vector2.left * runSpeed * Time.deltaTime);
-        RaycastHit2D hit = Physics2D.Raycast(detectPoint.position, Vector2.down, distance, detectLayer);
-        if (!hit)
+        if (!isTurning)
         {
-            if (facingLeft)
+            Vector2 moveDirection = facingLeft ? Vector2.left : Vector2.right;
+            rb.MovePosition(rb.position + moveDirection * runSpeed * Time.fixedDeltaTime);
+            RaycastHit2D hit = Physics2D.Raycast(detectPoint.position, Vector2.down, distance, detectLayer);
+            if (!hit)
             {
-                transform.eulerAngles = new Vector3(0, -180, 0);
-                facingLeft = false;
-            }
-            else
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
-                facingLeft = true;
+                StartTurning();
             }
         }
     }
 
     void FacePlayer_Level2()
     {
-        if (transform.position.x < player_Level2.position.x && facingLeft)
+        if (!isTurning)
         {
-            transform.eulerAngles = new Vector3(0f, -180f, 0f);
-            facingLeft = false;
-        }
-        else if (transform.position.x > player_Level2.position.x && !facingLeft)
-        {
-            transform.eulerAngles = new Vector3(0f, 0f, 0f);
-            facingLeft = true;
+            if (transform.position.x < player_Level2.position.x && facingLeft)
+            {
+                transform.eulerAngles = new Vector3(0f, -180f, 0f);
+                facingLeft = false;
+            }
+            else if (transform.position.x > player_Level2.position.x && !facingLeft)
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                facingLeft = true;
+            }
         }
     }
 
     void ChasePlayer_Level2(float distanceToPlayer_Level2)
     {
-        transform.position = Vector2.MoveTowards(transform.position, player_Level2.position, chaseSpeed * Time.deltaTime);
+        if (!isTurning && player_Level2 != null)
+        {
+            Vector2 targetPosition = Vector2.MoveTowards(rb.position, player_Level2.position, chaseSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(targetPosition);
+        }
     }
 
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
-
         animator.SetBool("Attack", true);
-
         yield return new WaitForSeconds(attackDelay);
-
         animator.SetBool("Attack", false);
         isAttacking = false;
     }
 
     public void Attack()
     {
-        Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer); // Sửa thành OverlapCircle
+        Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
         if (collInfo && collInfo.GetComponent<Player_Level2>() != null)
         {
             collInfo.GetComponent<Player_Level2>().Player_Level2TakeDamage(1);
@@ -134,8 +141,6 @@ public class EnemyLv2 : MonoBehaviour
         if (maxHealth <= 0 || isInDamageCooldown) return;
         maxHealth -= damage;
         Debug.Log(this.gameObject.name + " nhận sát thương, HP còn: " + maxHealth);
-
-        // Kích hoạt animation "Damage", giống Boss
         animator.SetBool("Damage", true);
         isInDamageCooldown = true;
         Invoke("EndDamageCooldown", damageCooldownDuration);
@@ -144,25 +149,24 @@ public class EnemyLv2 : MonoBehaviour
     private void EndDamageCooldown()
     {
         isInDamageCooldown = false;
-        animator.SetBool("Damage", false); // Reset giống Boss
+        animator.SetBool("Damage", false);
     }
 
     public void OnPlayer_Level2Dead()
     {
         isPlayer_Level2Dead = true;
         player_Level2 = null;
-        animator.SetBool("PlayerDead", true); // Kích hoạt trạng thái PlayerDead
-        StartCoroutine(TransitionToIdleAfterDelay(1.0f)); // Chuyển về Idle sau delay
+        animator.SetBool("PlayerDead", true);
+        StartCoroutine(TransitionToIdleAfterDelay(1.0f));
         StopAllCoroutines();
-        Debug.Log($"{gameObject.name} nhận biết Player_Level2 đã chết, chuyển sang trạng thái Idle.");
+        Debug.Log($"{gameObject.name} nhận biết Player_Level2 đã chết.");
     }
 
     private IEnumerator TransitionToIdleAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay); // Đợi animation Player_Level2Dead hoàn tất
-        animator.SetBool("PlayerDead", false); // Tắt điều kiện PlayerDead
-        animator.SetBool("Attack", false); // Đảm bảo Attack bị tắt
-        // Trạng thái sẽ tự động chuyển về Enemy_Idle nhờ điều kiện Exit Time
+        yield return new WaitForSeconds(delay);
+        animator.SetBool("PlayerDead", false);
+        animator.SetBool("Attack", false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -172,6 +176,32 @@ public class EnemyLv2 : MonoBehaviour
             Die();
             Debug.Log(this.gameObject.name + " fell into DeathZone!");
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log($"Va chạm với {collision.gameObject.name}, tag: {collision.gameObject.tag}, contact count: {collision.contactCount}");
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Mush"))
+        {
+            StartTurning(); // Gọi hàm quay mặt giống Patrol
+            Vector2 awayDirection = (transform.position - collision.transform.position).normalized;
+            rb.AddForce(awayDirection * 50f); // Tách ra nhưng vẫn quay
+        }
+    }
+
+    private void StartTurning()
+    {
+        isTurning = true;
+        facingLeft = !facingLeft;
+        transform.eulerAngles = new Vector3(0, facingLeft ? -180 : 0, 0);
+        Debug.Log($"{gameObject.name} đang quay mặt tại {transform.position}");
+        StartCoroutine(EndTurning(0.1f)); // Tạm dừng di chuyển trong 0.1s
+    }
+
+    private IEnumerator EndTurning(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isTurning = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -188,7 +218,6 @@ public class EnemyLv2 : MonoBehaviour
     }
 
     void Die()
-
     {
         Debug.Log(this.gameObject.name + " Died");
         GameManager gameManager = FindFirstObjectByType<GameManager>();
