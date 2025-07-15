@@ -430,10 +430,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Thêm phương thức ReturnToMenu giống Level 2
+
     public void ReturnToMenu()
     {
-        Debug.Log("Returning to Menu scene at " + System.DateTime.Now);
+        Debug.Log("Quay về Menu từ Level 1 tại " + System.DateTime.Now);
+        PlayerPrefs.SetString("LastLevel", "Level1");
+        PlayerPrefs.Save();
         Time.timeScale = 1;
         if (UIControllerlv1.Instance != null && UIControllerlv1.Instance.pausePanel != null)
         {
@@ -444,5 +446,13 @@ public class GameManager : MonoBehaviour
         if (decorations != null) decorations.SetActive(false);
         if (key != null) key.SetActive(false);
         SceneManager.LoadScene("Menu");
+    }
+
+
+    public void LoadNextLevel()
+    {
+        Time.timeScale = 1; 
+        SceneManager.LoadScene("Level 2");
+        Debug.Log("Loading Level 2 at " + System.DateTime.Now);
     }
 }

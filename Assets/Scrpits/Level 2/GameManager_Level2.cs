@@ -280,7 +280,9 @@ public class GameManager_Level2 : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        Debug.Log("Returning to Menu scene at " + System.DateTime.Now);
+        Debug.Log("Quay về Menu từ Level 2 tại " + System.DateTime.Now);
+        PlayerPrefs.SetString("LastLevel", "Level 2");
+        PlayerPrefs.Save();
         Time.timeScale = 1;
         if (UIController.Instance != null && UIController.Instance.pausePanel != null)
         {

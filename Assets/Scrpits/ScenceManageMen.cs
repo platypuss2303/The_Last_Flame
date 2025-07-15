@@ -5,24 +5,26 @@ public class SceneManageMen : MonoBehaviour
 {
     public void Play()
     {
-        Debug.Log("Loading Level1 scene at " + System.DateTime.Now);
+        Debug.Log("Tải cảnh Level1 tại " + System.DateTime.Now);
         SceneManager.LoadScene("Level1");
     }
 
     public void Exit()
     {
-        Debug.Log("Exit Game at " + System.DateTime.Now);
+        Debug.Log("Thoát game tại " + System.DateTime.Now);
         Application.Quit();
     }
 
     public void Menu()
     {
-        Debug.Log("Loading Menu scene at " + System.DateTime.Now);
+        Debug.Log("Tải cảnh Menu tại " + System.DateTime.Now);
         SceneManager.LoadScene("Menu");
     }
 
     public void NextBttn()
     {
-        Debug.Log("Load Next Level at " + System.DateTime.Now);
+        string lastLevel = PlayerPrefs.GetString("LastLevel", "Level1");
+        Debug.Log("Tải cảnh " + lastLevel + " để tiếp tục tại " + System.DateTime.Now);
+        SceneManager.LoadScene(lastLevel);
     }
 }

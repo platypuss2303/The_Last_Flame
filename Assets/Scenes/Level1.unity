@@ -5070,7 +5070,15 @@ PrefabInstance:
     - target: {fileID: 1932484534167746153, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 777710578}
+      objectReference: {fileID: 8746661099675802630}
+    - target: {fileID: 1932484534167746153, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadNextLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 1932484534167746153, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3202566647011804969, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
       propertyPath: m_Name
       value: GameVictory

@@ -113,6 +113,7 @@ public class Player : MonoBehaviour
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
+            Object.FindAnyObjectByType<Sound>().PlaySound("Attack");
         }
 
         if (!gameObject.activeSelf || isDead)
@@ -413,6 +414,7 @@ public class Player : MonoBehaviour
                 vitoryUI.SetActive(true);
                 isWon = true;
                 Debug.Log("Victory UI activated after reaching door with key! HP: " + maxHealth + ", Position: " + transform.position);
+                Time.timeScale = 0; // Dừng game khi thắng
             }
             else
             {
@@ -468,7 +470,7 @@ public class Player : MonoBehaviour
                 if (ghostSR != null)
                 {
                     ghostSR.sprite = spriteRenderer.sprite;
-                    ghostSR.flipX = !facingRight; 
+                    ghostSR.flipX = !facingRight;
                     ghostSR.sortingLayerName = "Player";
                     ghostSR.sortingOrder = 9;
 
