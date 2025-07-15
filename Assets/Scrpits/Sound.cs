@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using System.Linq; // Thêm để sử dụng Contains
 
 public class Sound : MonoBehaviour
 {
     public AudioSource jumpAudioSource;
-    public AudioSource menuBackgroundAudioSource; // Dùng cho "Music Hall" (menu)
-    public AudioSource gameBackgroundAudioSource; // Dùng cho background in-game
+    public AudioSource menuBackgroundAudioSource;
+    public AudioSource gameBackgroundAudioSource;
     public AudioSource attackAudioSource;
     public AudioSource coinAudioSource;
     public AudioSource bossAudioSource;
 
-    private string menuSceneName = "Menu"; // Tên scene menu
-    private string gameSceneName = "Level1"; // Tên scene game, thay đổi nếu khác
+    private string menuSceneName = "Menu";
+    private string[] gameScenes = { "Level1", "Level 2" }; // Danh sách các scene game
 
     void Start()
     {
@@ -105,18 +106,18 @@ public class Sound : MonoBehaviour
                     Debug.Log("Stopping Game Background in Menu scene");
                 }
             }
-            // Phát âm thanh game khi ở scene game
-            else if (currentScene == gameSceneName)
+            // Phát âm thanh game khi ở scene Level1 hoặc Level2
+            else if (gameScenes.Contains(currentScene))
             {
                 if (gameBackgroundAudioSource != null && !gameBackgroundAudioSource.isPlaying)
                 {
                     gameBackgroundAudioSource.Play();
-                    Debug.Log("Playing Game Background in Level1 scene");
+                    Debug.Log("Playing Game Background in " + currentScene + " scene");
                 }
                 if (menuBackgroundAudioSource != null && menuBackgroundAudioSource.isPlaying)
                 {
                     menuBackgroundAudioSource.Stop();
-                    Debug.Log("Stopping Music Hall in Level1 scene");
+                    Debug.Log("Stopping Music Hall in " + currentScene + " scene");
                 }
             }
             // Dừng cả hai nếu không phải menu hoặc game
@@ -125,12 +126,12 @@ public class Sound : MonoBehaviour
                 if (menuBackgroundAudioSource != null && menuBackgroundAudioSource.isPlaying)
                 {
                     menuBackgroundAudioSource.Stop();
-                    Debug.Log("Stopping Music Hall outside Menu/Level1 scene");
+                    Debug.Log("Stopping Music Hall outside Menu/Level scenes");
                 }
                 if (gameBackgroundAudioSource != null && gameBackgroundAudioSource.isPlaying)
                 {
                     gameBackgroundAudioSource.Stop();
-                    Debug.Log("Stopping Game Background outside Menu/Level1 scene");
+                    Debug.Log("Stopping Game Background outside Menu/Level scenes");
                 }
             }
         }
