@@ -926,6 +926,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 566879664}
     m_Modifications:
+    - target: {fileID: 2514278083773706842, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_Text
+      value: Next
+      objectReference: {fileID: 0}
     - target: {fileID: 3292090071035795219, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
       propertyPath: m_Name
       value: MenuUI
@@ -934,6 +938,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1527441924}
+    - target: {fileID: 3465210694126541868, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: NextBttn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3465210694126541868, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SceneManageMen, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4111920011932026170, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_Name
+      value: Next
+      objectReference: {fileID: 0}
     - target: {fileID: 4153387169989950160, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1018,6 +1034,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1527441924}
+    - target: {fileID: 5888802773457800876, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_Name
+      value: Next
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744769208605647945, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 360.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744769208605647945, guid: efb56f682e4f2f84d9366fcd20878847, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
