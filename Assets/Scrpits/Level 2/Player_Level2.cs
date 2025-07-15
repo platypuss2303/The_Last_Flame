@@ -46,7 +46,7 @@ public class Player_Level2 : MonoBehaviour
     private bool isAttackOnCooldown = false;
     private float attackCooldownDuration = 1f;
 
-    private Sound sound; // Thêm tham chiếu đến Sound
+    private Sound sound;
 
     void Start()
     {
@@ -78,7 +78,6 @@ public class Player_Level2 : MonoBehaviour
         if (victoryUI != null) victoryUI.SetActive(false);
         if (gameOverUI != null) gameOverUI.SetActive(false);
 
-        // Tìm và lưu tham chiếu đến Sound object
         sound = FindAnyObjectByType<Sound>();
         if (sound == null)
         {
@@ -101,7 +100,7 @@ public class Player_Level2 : MonoBehaviour
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
-            if (sound != null) sound.PlaySound("Attack"); // Thêm âm thanh khi tấn công trong Dash
+            if (sound != null) sound.PlaySound("Attack");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Attack sound!");
         }
         if (!gameObject.activeSelf || isDead) return;
@@ -134,7 +133,7 @@ public class Player_Level2 : MonoBehaviour
             Jump();
             animator.SetBool("Jump", true);
             isGround = false;
-            if (sound != null) sound.PlaySound("Jump"); // Thêm âm thanh khi nhảy
+            if (sound != null) sound.PlaySound("Jump");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Jump sound!");
         }
 
@@ -152,7 +151,7 @@ public class Player_Level2 : MonoBehaviour
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
-            if (sound != null) sound.PlaySound("Attack"); // Thêm âm thanh khi tấn công (Q)
+            if (sound != null) sound.PlaySound("Attack");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Attack sound!");
         }
 
@@ -161,7 +160,7 @@ public class Player_Level2 : MonoBehaviour
             animator.SetTrigger("PunchTrigger2");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
-            if (sound != null) sound.PlaySound("Attack"); // Thêm âm thanh khi tấn công (E)
+            if (sound != null) sound.PlaySound("Attack");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Attack sound!");
         }
 
@@ -173,7 +172,7 @@ public class Player_Level2 : MonoBehaviour
             else animator.SetTrigger("Attack3");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
-            if (sound != null) sound.PlaySound("Attack"); // Thêm âm thanh khi tấn công (chuột trái)
+            if (sound != null) sound.PlaySound("Attack");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Attack sound!");
         }
     }
@@ -208,21 +207,20 @@ public class Player_Level2 : MonoBehaviour
             Collider2D hitInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, targetLayer);
             if (hitInfo)
             {
-                // Kiểm tra bất kỳ component nào có phương thức EnemyTakeDamage
                 MonoBehaviour enemy = hitInfo.GetComponent<MonoBehaviour>();
                 if (enemy != null)
                 {
                     System.Reflection.MethodInfo method = enemy.GetType().GetMethod("EnemyTakeDamage");
                     if (method != null)
                     {
-                        method.Invoke(enemy, new object[] { 1 }); // Gọi EnemyTakeDamage với damage = 1
+                        method.Invoke(enemy, new object[] { 1 });
                         Debug.Log("Player attacked " + hitInfo.gameObject.name + " with EnemyTakeDamage! at " + System.DateTime.Now);
-                        if (hitInfo.CompareTag("BossLv2")) // Phát âm thanh Boss nếu trúng BossLv2
+                        if (hitInfo.CompareTag("BossLv2"))
                         {
                             if (sound != null) sound.PlaySound("Boss");
                             else Debug.LogWarning("Sound object không tìm thấy khi phát Boss sound!");
                         }
-                        else // Phát âm thanh Attack cho các kẻ thù khác
+                        else
                         {
                             if (sound != null) sound.PlaySound("Attack");
                             else Debug.LogWarning("Sound object không tìm thấy khi phát Attack sound!");
@@ -255,36 +253,45 @@ public class Player_Level2 : MonoBehaviour
             currentCoin++;
             if (gameManager != null) gameManager.CollectItem();
             Destroy(other.gameObject);
-            if (sound != null) sound.PlaySound("Coin"); // Thêm âm thanh khi nhặt coin
+            if (sound != null) sound.PlaySound("Coin");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Coin sound!");
         }
         else if (other.gameObject.tag == "Key")
         {
-            hasKey = true;
+            if (gameManager != null)
+            {
+                gameManager.CollectKey();
+                Debug.Log("Player_Level2 picked up the key and called GameManager_Level2.CollectKey at " + System.DateTime.Now);
+            }
+            else
+            {
+                Debug.LogError("GameManager_Level2 not found when collecting key!");
+            }
             Destroy(other.gameObject);
-            Debug.Log("Player picked up the key! HP: " + maxHealth + " at " + System.DateTime.Now);
-            if (sound != null) sound.PlaySound("Key"); // Thêm âm thanh khi nhặt key
+            if (sound != null) sound.PlaySound("Key");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Key sound!");
         }
-        else if (other.gameObject.tag == "Door" && hasKey)
+        else if (other.gameObject.tag == "Door")
         {
-            OpenDoorAndTransition();
-            if (sound != null) sound.PlaySound("Door"); // Thêm âm thanh khi mở cửa
-            else Debug.LogWarning("Sound object không tìm thấy khi phát Door sound!");
+            if (gameManager != null)
+            {
+                if (doorAnimator != null) doorAnimator.SetTrigger("Open");
+                gameManager.OnPlayerReachDoor();
+                Debug.Log("Player_Level2 reached door and called GameManager_Level2.OnPlayerReachDoor at " + System.DateTime.Now);
+                if (sound != null) sound.PlaySound("Door");
+                else Debug.LogWarning("Sound object không tìm thấy khi phát Door sound!");
+            }
+            else
+            {
+                Debug.LogError("GameManager_Level2 not found when reaching door!");
+            }
         }
         else if (other.gameObject.CompareTag("DeathZone"))
         {
             Debug.Log("Entered DeathZone at " + System.DateTime.Now);
             Die();
-            if (sound != null) sound.PlaySound("Death"); // Thêm âm thanh khi chết
+            if (sound != null) sound.PlaySound("Death");
             else Debug.LogWarning("Sound object không tìm thấy khi phát Death sound!");
-        }
-        else if (other.gameObject.CompareTag("Checkpoint"))
-        {
-            Checkpoint.lastCheckpointPos = transform.position;
-            Debug.Log("Checkpoint saved at: " + Checkpoint.lastCheckpointPos + " at " + System.DateTime.Now);
-            if (sound != null) sound.PlaySound("Checkpoint"); // Thêm âm thanh khi chạm checkpoint
-            else Debug.LogWarning("Sound object không tìm thấy khi phát Checkpoint sound!");
         }
     }
 
@@ -338,21 +345,6 @@ public class Player_Level2 : MonoBehaviour
             {
                 gameManager.GameOver();
             }
-        }
-    }
-
-    public void OpenDoorAndTransition()
-    {
-        if (hasKey)
-        {
-            if (doorAnimator != null) doorAnimator.SetTrigger("Open");
-            if (victoryUI != null)
-            {
-                victoryUI.SetActive(true);
-                isWon = true;
-                Debug.Log("Victory UI activated! HP: " + maxHealth + " at " + System.DateTime.Now);
-            }
-            hasKey = false;
         }
     }
 

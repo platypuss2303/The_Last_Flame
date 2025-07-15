@@ -20,6 +20,8 @@ TagManager:
   - Mush
   - Bat
   - Mush1
+  - BossLv2
+  - Key_Level2
   layers:
   - Default
   - TransparentFX
