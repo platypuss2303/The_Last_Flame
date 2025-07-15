@@ -91,6 +91,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerAimController.cs" />
     <Compile Include="Assets\Scrpits\Level 2\Bat.cs" />
     <Compile Include="Assets\Scrpits\Player.cs" />
+    <Compile Include="Assets\Scrpits\Sound.cs" />
     <Compile Include="Assets\Scrpits\SceneTransition.cs" />
     <Compile Include="Assets\Scrpits\GameManager.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\MixCamerasBasedOnSpeed.cs" />
