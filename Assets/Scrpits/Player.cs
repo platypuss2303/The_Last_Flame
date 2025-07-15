@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public GameObject ghostEffect; // Prefab cho ghost effect
-    public float ghostDelaySeconds = 0.05f; // Tần suất xuất hiện ghost
-    public float ghostLifetime = 0.5f; // Thời gian tồn tại của mỗi ghost
+    public GameObject ghostEffect;
+    public float ghostDelaySeconds = 0.05f;
+    public float ghostLifetime = 0.5f;
     private Coroutine dashEffectCoroutine;
 
     private bool canDash = true;
     private bool isDashing;
-    public float dashingPower = 10f; // Sức mạnh lướt
-    public float dashingTime = 0.2f; // Thời gian lướt
-    public float dashingCooldown = 1f; // Thời gian cooldown
+    public float dashingPower = 10f;
+    public float dashingTime = 0.2f;
+    public float dashingCooldown = 1f;
 
     public GameObject vitoryUI;
     public GameObject gameOverUI;
@@ -167,20 +167,20 @@ public class Player : MonoBehaviour
             animator.SetFloat("Walk", 0f);
         }
 
-
         if (Input.GetKeyDown(KeyCode.Q) && !isAttackOnCooldown && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
         {
             animator.SetTrigger("PunchTrigger");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
+            Object.FindAnyObjectByType<Sound>().PlaySound("Attack");
         }
-
 
         if (Input.GetKeyDown(KeyCode.E) && !isAttackOnCooldown)
         {
             animator.SetTrigger("PunchTrigger2");
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
+            Object.FindAnyObjectByType<Sound>().PlaySound("Attack");
         }
 
         if (Input.GetMouseButtonDown(0) && !isAttackOnCooldown)
@@ -202,6 +202,7 @@ public class Player : MonoBehaviour
 
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
+            Object.FindAnyObjectByType<Sound>().PlaySound("Attack");
         }
     }
 
@@ -230,6 +231,7 @@ public class Player : MonoBehaviour
             Vector2 velocity = rb.linearVelocity;
             velocity.y = jumpHeight;
             rb.linearVelocity = velocity;
+            Object.FindAnyObjectByType<Sound>().PlaySound("Jump");
         }
     }
 
@@ -259,6 +261,7 @@ public class Player : MonoBehaviour
                 {
                     BossScript.TakeDamage(1);
                     Debug.Log("Player attacked " + hitInfo.gameObject.name + " (Boss)!");
+                    Object.FindAnyObjectByType<Sound>().PlaySound("Boss");
                 }
             }
         }
@@ -288,6 +291,7 @@ public class Player : MonoBehaviour
                 gameManager.CollectItem();
             }
             Destroy(other.gameObject);
+            Object.FindAnyObjectByType<Sound>().PlaySound("Coin");
         }
         else if (other.gameObject.tag == "Trap")
         {
@@ -464,7 +468,7 @@ public class Player : MonoBehaviour
                 if (ghostSR != null)
                 {
                     ghostSR.sprite = spriteRenderer.sprite;
-                    ghostSR.flipX = !facingRight; // Đảm bảo ghost flip theo hướng nhân vật
+                    ghostSR.flipX = !facingRight; 
                     ghostSR.sortingLayerName = "Player";
                     ghostSR.sortingOrder = 9;
 
