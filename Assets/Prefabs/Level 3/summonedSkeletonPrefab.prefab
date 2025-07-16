@@ -74,10 +74,10 @@ GameObject:
   - component: {fileID: 8245439845396352807}
   - component: {fileID: 3011658360827764649}
   - component: {fileID: 177083717671083373}
-  - component: {fileID: 9081012317256328974}
   - component: {fileID: 2557195201558817143}
+  - component: {fileID: 5440889632319523008}
   m_Layer: 8
-  m_Name: SkeletonSummon
+  m_Name: summonedSkeletonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -228,35 +228,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.833333, y: 3.863387}
   m_EdgeRadius: 0
---- !u!114 &9081012317256328974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6456235380656776139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ed772df95d24a7468784f98529918fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 3
-  animator: {fileID: 2557195201558817143}
-  player: {fileID: 0}
-  attackRange: 10
-  walkSpeed: 0.3
-  chaseSpeed: 0.5
-  retrieveDistance: 2.5
-  detectPoint: {fileID: 48199579359746580}
-  distance: 1.2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  attackPoint: {fileID: 3075253528384151161}
-  attackRadius: 2
-  attackLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!95 &2557195201558817143
 Animator:
   serializedVersion: 7
@@ -279,3 +250,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5440889632319523008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6456235380656776139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01dfd91fc9c594642b53869ce1ec83ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
