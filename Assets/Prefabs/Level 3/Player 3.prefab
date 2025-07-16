@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 1772827584951647899}
   - component: {fileID: 531146864220131220}
   - component: {fileID: 4234870633394736340}
-  m_Layer: 7
+  - component: {fileID: 1179775550502144678}
+  m_Layer: 15
   m_Name: Player 3
-  m_TagString: Player
+  m_TagString: Player_Level3
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,7 +154,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.011511803, y: -0.050085783}
+  m_Offset: {x: -0.011511803, y: -0.0013275146}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -163,7 +164,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.8987617, y: 3.3001714}
+  m_Size: {x: 1.8987617, y: 3.397688}
   m_EdgeRadius: 0
 --- !u!95 &531146864220131220
 Animator:
@@ -303,6 +304,42 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &1179775550502144678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543513606031351790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93effc7d6be3dad47888547e0b7af841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostEffect: {fileID: 8235927324208563522, guid: aa2c1a38651565e44bed94a973ea1368, type: 3}
+  ghostDelaySeconds: 0.05
+  ghostLifetime: 0.5
+  dashingPower: 10
+  dashingTime: 0.2
+  dashingCooldown: 1
+  victoryUI: {fileID: 3202566647011804969, guid: fb97c0b0e9b241947affd25afce4280e, type: 3}
+  gameOverUI: {fileID: 3202566647011804969, guid: 656988622fac6384e951cff902af3b19, type: 3}
+  currentCoin: 0
+  currentCoinText: {fileID: 0}
+  maxHealthText: {fileID: 0}
+  maxHealth: 10
+  movement: 0
+  speed: 7
+  rb: {fileID: 1177407911607373964}
+  jumpHeight: 10
+  animator: {fileID: 531146864220131220}
+  attackPoint: {fileID: 5580624740204393844}
+  attackRadius: 1.5
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 65536
+  hasKey: 0
+  transitionImage: {fileID: 0}
 --- !u!1 &2450047405327163673
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +349,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5580624740204393844}
-  m_Layer: 7
+  m_Layer: 15
   m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
