@@ -118,6 +118,7 @@
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\SimplePlayerShoot.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\FlyAround.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RigidbodyInterpolationSetter.cs" />
+    <Compile Include="Assets\Scrpits\Level 3\Minotaur.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\RunnerController.cs" />
     <Compile Include="Assets\Samples\Cinemachine\3.1.3\Shared Assets\Scripts\LockPosZ.cs" />
     <Compile Include="Assets\Scrpits\BackGround.cs" />

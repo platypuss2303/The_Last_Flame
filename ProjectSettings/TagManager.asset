@@ -22,6 +22,8 @@ TagManager:
   - Mush1
   - BossLv2
   - Key_Level2
+  - Player_Level3
+  - EnemyLv3
   layers:
   - Default
   - TransparentFX
@@ -38,8 +40,8 @@ TagManager:
   - Mushlv2
   - Mush
   - Bosslv2
-  - 
-  - 
+  - Player_Level3
+  - EnemyLv3
   - 
   - 
   - 
