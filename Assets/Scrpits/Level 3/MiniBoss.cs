@@ -9,7 +9,6 @@ public class MiniBoss : MonoBehaviour
     public float attackRange = 10f;
     private bool Player_Level3InRange = false;
     public float walkSpeed = 1.5f;
-    public float jumpDistance = 5f; // Giữ lại nhưng không dùng nữa
 
     public Transform detectPoint;
     public float distance = 1f;
@@ -26,11 +25,10 @@ public class MiniBoss : MonoBehaviour
     private bool isInDamageCooldown = false;
     private float damageCooldownDuration = 0.5f;
 
-    // Thêm biến cho summon
     public GameObject skeletonPrefab;
-    private bool hasSummoned = false;
+    private float lastSummonTime;
+    public float summonCooldown = 8f; // Đặt cooldown là 8 giây
 
-    // Biến tuần tra
     public float patrolDistance = 5f;
     private Vector2 startPosition;
     private float distanceTraveled;
@@ -38,12 +36,17 @@ public class MiniBoss : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        if (animator == null) Debug.LogError("Animator không tìm thấy trên " + gameObject.name);
+        if (animator == null || animator.runtimeAnimatorController == null)
+        {
+            Debug.LogError("Animator hoặc Animator Controller không tìm thấy trên " + gameObject.name);
+            return;
+        }
 
         Player_Level3 = GameObject.FindGameObjectWithTag("Player_Level3")?.transform;
-        if (Player_Level3 == null) Debug.LogError("Player_Level3 không tìm thấy! Vui lòng đảm bảo Player_Level3 có tag 'Player_Level3'.");
+        if (Player_Level3 == null) Debug.LogError("Player_Level3 không tìm thấy!");
 
         startPosition = transform.position;
+        lastSummonTime = -summonCooldown; // Cho phép summon ngay lần đầu
     }
 
     void Update()
@@ -126,59 +129,49 @@ public class MiniBoss : MonoBehaviour
 
     IEnumerator AttackRoutine()
     {
-        if (isAttacking) yield break; // Ngăn lặp nếu đang tấn công
+        if (isAttacking || animator == null) yield break;
         isAttacking = true;
 
-        // Tăng xác suất cho Attack2 (bao gồm summon)
-        int randomChoice = Random.Range(0, 4); // 0-3, với 2-3 ưu tiên Attack2
-        if (randomChoice < 2) // 50% cho Attack1
+        int randomChoice = Random.Range(0, 4);
+        if (randomChoice < 2 || (Time.time - lastSummonTime < summonCooldown)) // 50% hoặc trong cooldown
         {
             animator.SetBool("Attack1", true);
             animator.SetBool("Attack2", false);
+            SummonSkeleton(); // Gọi summon trực tiếp cho Attack1
         }
-        else // 50% cho Attack2
+        else
         {
             animator.SetBool("Attack1", false);
             animator.SetBool("Attack2", true);
-            SummonSkeleton(); // Kích hoạt summon khi dùng Attack2
+            lastSummonTime = Time.time; // Cập nhật thời gian, summon sẽ do Animation Event xử lý cho Attack2
         }
 
-        yield return new WaitForSeconds(0.5f); // Chờ animation hoàn thành
-        Attack();
+        yield return new WaitForSeconds(0.5f);
+        if (animator.GetBool("Attack2")) // Chỉ tấn công khi là Attack2
+        {
+            Attack();
+        }
         animator.SetBool("Attack1", false);
         animator.SetBool("Attack2", false);
         isAttacking = false;
 
-        // Tăng tần suất tấn công bằng cách lặp lại sau một khoảng thời gian ngắn
-        yield return new WaitForSeconds(1.0f); // Chờ 1 giây trước khi tấn công lại
-    }
-
-    void ApplyJumpDamage()
-    {
-        // Loại bỏ vì không còn Jump, giữ lại để tương thích nhưng không sử dụng
+        yield return new WaitForSeconds(1.0f);
     }
 
     void SummonSkeleton()
     {
-        if (!hasSummoned)
+        Debug.Log("SummonSkeleton event triggered at " + Time.time);
+        if (Time.time - lastSummonTime >= summonCooldown)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                Vector3 offset = new Vector3(Random.Range(-1f, 1f), -1f, 0);
-                Vector3 summonPosition = transform.position + offset;
-                Instantiate(skeletonPrefab, summonPosition, Quaternion.identity);
-            }
-            hasSummoned = true;
+            Vector3 offset = new Vector3(facingLeft ? -1f : 1f, -1f, 0);
+            Vector3 summonPosition = transform.position + offset;
+            Debug.Log("Summoning skeleton at: " + summonPosition);
+            Instantiate(skeletonPrefab, summonPosition, Quaternion.identity);
+            lastSummonTime = Time.time; // Cập nhật thời gian summon
         }
         else
         {
-            // Summon lại nếu đã hết thời gian hoặc điều kiện khác (có thể tùy chỉnh)
-            for (int i = 0; i < 1; i++) // Summon ít hơn để kiểm soát số lượng
-            {
-                Vector3 offset = new Vector3(Random.Range(-1f, 1f), -1f, 0);
-                Vector3 summonPosition = transform.position + offset;
-                Instantiate(skeletonPrefab, summonPosition, Quaternion.identity);
-            }
+            Debug.Log("Summon on cooldown, remaining: " + (summonCooldown - (Time.time - lastSummonTime)));
         }
     }
 
@@ -220,7 +213,6 @@ public class MiniBoss : MonoBehaviour
         Player_Level3 = null;
         animator.SetBool("PlayerDead", true);
         StartCoroutine(TransitionToIdleAfterDelay(1.0f));
-        Debug.Log(gameObject.name + " nhận biết Player_Level3 đã chết, chuyển sang trạng thái Idle.");
     }
 
     private IEnumerator TransitionToIdleAfterDelay(float delay)
@@ -236,7 +228,6 @@ public class MiniBoss : MonoBehaviour
         if (other.CompareTag("DeathZone"))
         {
             Die();
-            Debug.Log(gameObject.name + " fell into DeathZone!");
         }
     }
 
