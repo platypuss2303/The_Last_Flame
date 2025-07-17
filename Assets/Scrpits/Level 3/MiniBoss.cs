@@ -9,8 +9,7 @@ public class MiniBoss : MonoBehaviour
     public float attackRange = 10f;
     private bool Player_Level3InRange = false;
     public float walkSpeed = 1.5f;
-    public float chaseSpeed = 3.5f;
-    public float retrieveDistance = 2.5f;
+    public float jumpDistance = 5f; // Giữ lại nhưng không dùng nữa
 
     public Transform detectPoint;
     public float distance = 1f;
@@ -22,23 +21,16 @@ public class MiniBoss : MonoBehaviour
     public LayerMask attackLayer;
 
     private bool isAttacking = false;
-    public float attackDelay = 1.5f;
     private bool isPlayer_Level3Dead = false;
 
     private bool isInDamageCooldown = false;
     private float damageCooldownDuration = 0.5f;
 
-    
-    public float jumpHeight = 5f;
-    public float jumpDuration = 1f;
-    public int jumpDamage = 2;
-    private bool isJumping = false;
-
-    
+    // Thêm biến cho summon
     public GameObject skeletonPrefab;
     private bool hasSummoned = false;
 
-    
+    // Biến tuần tra
     public float patrolDistance = 5f;
     private Vector2 startPosition;
     private float distanceTraveled;
@@ -74,32 +66,17 @@ public class MiniBoss : MonoBehaviour
 
         if (!Player_Level3InRange)
         {
-            animator.SetBool("Attack", false);
             animator.SetBool("Attack1", false);
-            animator.SetBool("Jump", false);
+            animator.SetBool("Attack2", false);
             Patrol();
         }
         else
         {
             FacePlayer_Level3();
-            if (distanceToPlayer_Level3 > retrieveDistance && !isInDamageCooldown)
+            if (!isAttacking && !isInDamageCooldown)
             {
-                animator.SetBool("Attack", false);
-                animator.SetBool("Attack1", false);
-                animator.SetBool("Jump", false);
-                ChasePlayer_Level3(distanceToPlayer_Level3);
+                StartCoroutine(AttackRoutine());
             }
-            else if (!isAttacking && !isJumping && !isInDamageCooldown)
-            {
-                StartCoroutine(AttackOrJumpRoutine());
-            }
-        }
-
-       
-        if (isJumping && transform.position.y <= 0.1f && !hasSummoned)
-        {
-            SummonSkeleton();
-            ApplyJumpDamage();
         }
     }
 
@@ -137,89 +114,48 @@ public class MiniBoss : MonoBehaviour
 
         if (transform.position.x < Player_Level3.position.x && facingLeft)
         {
-            transform.eulerAngles = new Vector3(0f, -180f, 0f);
+            transform.eulerAngles = new Vector3(0, -180, 0);
             facingLeft = false;
         }
         else if (transform.position.x > Player_Level3.position.x && !facingLeft)
         {
-            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            transform.eulerAngles = new Vector3(0, 0, 0);
             facingLeft = true;
         }
     }
 
-    void ChasePlayer_Level3(float distanceToPlayer_Level3)
+    IEnumerator AttackRoutine()
     {
-        if (Player_Level3 == null) return;
-        transform.position = Vector2.MoveTowards(transform.position, Player_Level3.position, chaseSpeed * Time.deltaTime);
-    }
-
-    IEnumerator AttackOrJumpRoutine()
-    {
+        if (isAttacking) yield break; // Ngăn lặp nếu đang tấn công
         isAttacking = true;
-        int randomChoice = Random.Range(0, 3); // 0: Attack, 1: Attack2, 2: Jump
-        if (randomChoice == 0)
+
+        // Tăng xác suất cho Attack2 (bao gồm summon)
+        int randomChoice = Random.Range(0, 4); // 0-3, với 2-3 ưu tiên Attack2
+        if (randomChoice < 2) // 50% cho Attack1
         {
-            animator.SetBool("Attack", true);
+            animator.SetBool("Attack1", true);
             animator.SetBool("Attack2", false);
-            animator.SetBool("Jump", false);
         }
-        else if (randomChoice == 1)
+        else // 50% cho Attack2
         {
-            animator.SetBool("Attack", false);
+            animator.SetBool("Attack1", false);
             animator.SetBool("Attack2", true);
-            animator.SetBool("Jump", false);
-        }
-        else
-        {
-            animator.SetBool("Attack", false);
-            animator.SetBool("Attack2", false);
-            animator.SetBool("Jump", true);
-            yield return StartCoroutine(JumpRoutine());
+            SummonSkeleton(); // Kích hoạt summon khi dùng Attack2
         }
 
-        yield return new WaitForSeconds(attackDelay);
-        animator.SetBool("Attack", false);
+        yield return new WaitForSeconds(0.5f); // Chờ animation hoàn thành
+        Attack();
         animator.SetBool("Attack1", false);
-        animator.SetBool("Jump", false);
+        animator.SetBool("Attack2", false);
         isAttacking = false;
-        isJumping = false;
-    }
 
-    IEnumerator JumpRoutine()
-    {
-        isJumping = true;
-        float elapsedTime = 0f;
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = new Vector3(transform.position.x, transform.position.y + jumpHeight, transform.position.z);
-
-        while (elapsedTime < jumpDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / jumpDuration;
-            transform.position = Vector2.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-
-        elapsedTime = 0f;
-        while (elapsedTime < jumpDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / jumpDuration;
-            transform.position = Vector2.Lerp(targetPos, startPos, t);
-            yield return null;
-        }
+        // Tăng tần suất tấn công bằng cách lặp lại sau một khoảng thời gian ngắn
+        yield return new WaitForSeconds(1.0f); // Chờ 1 giây trước khi tấn công lại
     }
 
     void ApplyJumpDamage()
     {
-        Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, attackLayer);
-        foreach (Collider2D Player_Level3 in hitPlayers)
-        {
-            if (Player_Level3.GetComponent<Player_Level3>() != null)
-            {
-                Player_Level3.GetComponent<Player_Level3>().Player_Level3TakeDamage(jumpDamage);
-            }
-        }
+        // Loại bỏ vì không còn Jump, giữ lại để tương thích nhưng không sử dụng
     }
 
     void SummonSkeleton()
@@ -233,6 +169,16 @@ public class MiniBoss : MonoBehaviour
                 Instantiate(skeletonPrefab, summonPosition, Quaternion.identity);
             }
             hasSummoned = true;
+        }
+        else
+        {
+            // Summon lại nếu đã hết thời gian hoặc điều kiện khác (có thể tùy chỉnh)
+            for (int i = 0; i < 1; i++) // Summon ít hơn để kiểm soát số lượng
+            {
+                Vector3 offset = new Vector3(Random.Range(-1f, 1f), -1f, 0);
+                Vector3 summonPosition = transform.position + offset;
+                Instantiate(skeletonPrefab, summonPosition, Quaternion.identity);
+            }
         }
     }
 
@@ -281,9 +227,8 @@ public class MiniBoss : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         animator.SetBool("PlayerDead", false);
-        animator.SetBool("Attack", false);
         animator.SetBool("Attack1", false);
-        animator.SetBool("Jump", false);
+        animator.SetBool("Attack2", false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
