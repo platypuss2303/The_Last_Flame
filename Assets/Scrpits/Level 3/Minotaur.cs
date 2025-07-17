@@ -175,7 +175,7 @@ public class Minotaur : MonoBehaviour
         }
     }
 
-    public void MinotaurTakeDamage(int damage)
+    public void EnemyTakeDamage(int damage)
     {
         if (maxHealth <= 0 || isInDamageCooldown) return;
         maxHealth -= damage;
@@ -185,7 +185,6 @@ public class Minotaur : MonoBehaviour
         isInDamageCooldown = true;
         Invoke("EndDamageCooldown", damageCooldownDuration);
     }
-
     private void EndDamageCooldown()
     {
         isInDamageCooldown = false;

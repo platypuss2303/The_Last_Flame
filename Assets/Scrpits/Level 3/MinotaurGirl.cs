@@ -28,10 +28,9 @@ public class MinotaurGirl : MonoBehaviour
     private bool isInDamageCooldown = false;
     private float damageCooldownDuration = 0.5f;
 
-    
-    public float patrolDistance = 5f; 
+    public float patrolDistance = 5f;
     private Vector2 startPosition;
-    private float distanceTraveled; 
+    private float distanceTraveled;
 
     void Start()
     {
@@ -47,7 +46,6 @@ public class MinotaurGirl : MonoBehaviour
             Debug.LogError("Player_Level3 không tìm thấy! Vui lòng đảm bảo Player_Level3 có tag 'Player_Level3'.");
         }
 
-        // Lưu vị trí bắt đầu
         startPosition = transform.position;
     }
 
@@ -70,6 +68,7 @@ public class MinotaurGirl : MonoBehaviour
         {
             float distanceToPlayer_Level3 = Vector2.Distance(transform.position, player_Level3.position);
             player_Level3InRange = distanceToPlayer_Level3 <= attackRange;
+            Debug.Log($"Distance to Player: {distanceToPlayer_Level3}, In Range: {player_Level3InRange}, Cooldown: {isInDamageCooldown}, Attacking: {isAttacking}");
 
             if (!player_Level3InRange)
             {
@@ -79,14 +78,17 @@ public class MinotaurGirl : MonoBehaviour
             else
             {
                 FacePlayer_Level3();
+                // Chỉ chase nếu cách xa hơn retrieveDistance, nếu không thì tấn công
                 if (distanceToPlayer_Level3 > retrieveDistance && !isInDamageCooldown)
                 {
                     animator.SetBool("Attack", false);
                     ChasePlayer_Level3(distanceToPlayer_Level3);
                 }
-                else if (!isAttacking && !isInDamageCooldown)
+                else if (distanceToPlayer_Level3 <= retrieveDistance && !isAttacking && !isInDamageCooldown)
                 {
+                    animator.SetBool("Attack", true);
                     StartCoroutine(AttackRoutine());
+                    Debug.Log("Starting Attack");
                 }
             }
         }
@@ -100,16 +102,11 @@ public class MinotaurGirl : MonoBehaviour
             return;
         }
 
-        
         transform.Translate(Vector2.left * runSpeed * Time.deltaTime);
-
-       
         distanceTraveled = Mathf.Abs(transform.position.x - startPosition.x);
 
-       
         RaycastHit2D hit = Physics2D.Raycast(detectPoint.position, Vector2.down, distance, detectLayer);
 
-        
         if (distanceTraveled >= patrolDistance || !hit)
         {
             if (facingLeft)
@@ -122,7 +119,6 @@ public class MinotaurGirl : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 0, 0);
                 facingLeft = true;
             }
-           
             startPosition = transform.position;
         }
     }
@@ -175,7 +171,7 @@ public class MinotaurGirl : MonoBehaviour
         }
     }
 
-    public void MinotaurGirlTakeDamage(int damage)
+    public void EnemyTakeDamage(int damage)
     {
         if (maxHealth <= 0 || isInDamageCooldown) return;
         maxHealth -= damage;

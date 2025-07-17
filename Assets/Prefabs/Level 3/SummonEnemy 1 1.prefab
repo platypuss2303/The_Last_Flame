@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01dfd91fc9c594642b53869ce1ec83ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
+  maxHealth: 3
   animator: {fileID: 6643018643430445089}
   player: {fileID: 5348486311149970061, guid: f8e6ac94b668f9d49a67744dffb37995, type: 3}
   attackRange: 6
