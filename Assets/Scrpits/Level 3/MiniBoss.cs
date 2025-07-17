@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+
 public class MiniBoss : MonoBehaviour
 {
     public int maxHealth = 10;
     public Animator animator;
-    public Transform player;
+    public Transform Player_Level3;
     public float attackRange = 10f;
-    private bool playerInRange = false;
+    private bool Player_Level3InRange = false;
     public float walkSpeed = 1.5f;
     public float chaseSpeed = 3.5f;
     public float retrieveDistance = 2.5f;
@@ -22,22 +23,22 @@ public class MiniBoss : MonoBehaviour
 
     private bool isAttacking = false;
     public float attackDelay = 1.5f;
-    private bool isPlayerDead = false;
+    private bool isPlayer_Level3Dead = false;
 
     private bool isInDamageCooldown = false;
     private float damageCooldownDuration = 0.5f;
 
-    // Thêm biến cho jump damage
+    
     public float jumpHeight = 5f;
     public float jumpDuration = 1f;
     public int jumpDamage = 2;
     private bool isJumping = false;
 
-    // Thêm summon
+    
     public GameObject skeletonPrefab;
     private bool hasSummoned = false;
 
-    // Biến tuần tra
+    
     public float patrolDistance = 5f;
     private Vector2 startPosition;
     private float distanceTraveled;
@@ -47,8 +48,8 @@ public class MiniBoss : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator == null) Debug.LogError("Animator không tìm thấy trên " + gameObject.name);
 
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        if (player == null) Debug.LogError("Player không tìm thấy! Vui lòng đảm bảo Player có tag 'Player'.");
+        Player_Level3 = GameObject.FindGameObjectWithTag("Player_Level3")?.transform;
+        if (Player_Level3 == null) Debug.LogError("Player_Level3 không tìm thấy! Vui lòng đảm bảo Player_Level3 có tag 'Player_Level3'.");
 
         startPosition = transform.position;
     }
@@ -61,32 +62,32 @@ public class MiniBoss : MonoBehaviour
             return;
         }
 
-        if (isPlayerDead || player == null || !player.gameObject.activeSelf)
+        if (isPlayer_Level3Dead || Player_Level3 == null || !Player_Level3.gameObject.activeSelf)
         {
             animator.SetBool("PlayerDead", true);
             return;
         }
 
         animator.SetBool("PlayerDead", false);
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        playerInRange = distanceToPlayer <= attackRange;
+        float distanceToPlayer_Level3 = Vector2.Distance(transform.position, Player_Level3.position);
+        Player_Level3InRange = distanceToPlayer_Level3 <= attackRange;
 
-        if (!playerInRange)
+        if (!Player_Level3InRange)
         {
             animator.SetBool("Attack", false);
-            animator.SetBool("Attack2", false);
+            animator.SetBool("Attack1", false);
             animator.SetBool("Jump", false);
             Patrol();
         }
         else
         {
-            FacePlayer();
-            if (distanceToPlayer > retrieveDistance && !isInDamageCooldown)
+            FacePlayer_Level3();
+            if (distanceToPlayer_Level3 > retrieveDistance && !isInDamageCooldown)
             {
                 animator.SetBool("Attack", false);
-                animator.SetBool("Attack2", false);
+                animator.SetBool("Attack1", false);
                 animator.SetBool("Jump", false);
-                ChasePlayer(distanceToPlayer);
+                ChasePlayer_Level3(distanceToPlayer_Level3);
             }
             else if (!isAttacking && !isJumping && !isInDamageCooldown)
             {
@@ -94,7 +95,7 @@ public class MiniBoss : MonoBehaviour
             }
         }
 
-        // Kích hoạt summon khi nhảy và hạ cánh
+       
         if (isJumping && transform.position.y <= 0.1f && !hasSummoned)
         {
             SummonSkeleton();
@@ -130,26 +131,26 @@ public class MiniBoss : MonoBehaviour
         }
     }
 
-    void FacePlayer()
+    void FacePlayer_Level3()
     {
-        if (player == null) return;
+        if (Player_Level3 == null) return;
 
-        if (transform.position.x < player.position.x && facingLeft)
+        if (transform.position.x < Player_Level3.position.x && facingLeft)
         {
             transform.eulerAngles = new Vector3(0f, -180f, 0f);
             facingLeft = false;
         }
-        else if (transform.position.x > player.position.x && !facingLeft)
+        else if (transform.position.x > Player_Level3.position.x && !facingLeft)
         {
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
             facingLeft = true;
         }
     }
 
-    void ChasePlayer(float distanceToPlayer)
+    void ChasePlayer_Level3(float distanceToPlayer_Level3)
     {
-        if (player == null) return;
-        transform.position = Vector2.MoveTowards(transform.position, player.position, chaseSpeed * Time.deltaTime);
+        if (Player_Level3 == null) return;
+        transform.position = Vector2.MoveTowards(transform.position, Player_Level3.position, chaseSpeed * Time.deltaTime);
     }
 
     IEnumerator AttackOrJumpRoutine()
@@ -178,7 +179,7 @@ public class MiniBoss : MonoBehaviour
 
         yield return new WaitForSeconds(attackDelay);
         animator.SetBool("Attack", false);
-        animator.SetBool("Attack2", false);
+        animator.SetBool("Attack1", false);
         animator.SetBool("Jump", false);
         isAttacking = false;
         isJumping = false;
@@ -212,11 +213,11 @@ public class MiniBoss : MonoBehaviour
     void ApplyJumpDamage()
     {
         Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, attackLayer);
-        foreach (Collider2D player in hitPlayers)
+        foreach (Collider2D Player_Level3 in hitPlayers)
         {
-            if (player.GetComponent<Player_Level3>() != null)
+            if (Player_Level3.GetComponent<Player_Level3>() != null)
             {
-                player.GetComponent<Player_Level3>().Player_Level3TakeDamage(jumpDamage);
+                Player_Level3.GetComponent<Player_Level3>().Player_Level3TakeDamage(jumpDamage);
             }
         }
     }
@@ -267,13 +268,13 @@ public class MiniBoss : MonoBehaviour
         animator.SetBool("Damage", false);
     }
 
-    public void OnPlayerDead()
+    public void OnPlayer_Level3Dead()
     {
-        isPlayerDead = true;
-        player = null;
+        isPlayer_Level3Dead = true;
+        Player_Level3 = null;
         animator.SetBool("PlayerDead", true);
         StartCoroutine(TransitionToIdleAfterDelay(1.0f));
-        Debug.Log(gameObject.name + " nhận biết Player đã chết, chuyển sang trạng thái Idle.");
+        Debug.Log(gameObject.name + " nhận biết Player_Level3 đã chết, chuyển sang trạng thái Idle.");
     }
 
     private IEnumerator TransitionToIdleAfterDelay(float delay)
@@ -281,7 +282,7 @@ public class MiniBoss : MonoBehaviour
         yield return new WaitForSeconds(delay);
         animator.SetBool("PlayerDead", false);
         animator.SetBool("Attack", false);
-        animator.SetBool("Attack2", false);
+        animator.SetBool("Attack1", false);
         animator.SetBool("Jump", false);
     }
 
@@ -312,7 +313,7 @@ public class MiniBoss : MonoBehaviour
     void Die()
     {
         Debug.Log(gameObject.name + " Died");
-        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        GameManager_Level3 gameManager = FindFirstObjectByType<GameManager_Level3>();
         if (gameManager != null)
         {
             gameManager.KillEnemy();
