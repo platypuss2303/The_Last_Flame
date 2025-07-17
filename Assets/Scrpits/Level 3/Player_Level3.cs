@@ -47,6 +47,9 @@ public class Player_Level3 : MonoBehaviour
     private bool isAttackOnCooldown = false;
     private float attackCooldownDuration = 1f;
 
+    private bool isInDamageCooldown = false; // Biến mới để theo dõi cooldown sát thương
+    private float damageCooldownDuration = 0.5f; // Thời gian cooldown sát thương
+
     private Sound sound;
 
     void Start()
@@ -308,9 +311,15 @@ public class Player_Level3 : MonoBehaviour
 
     public void Player_Level3TakeDamage(int damage)
     {
-        if (luongMauHienTai <= 0 || !gameObject.activeSelf || isDead) return;
+        if (luongMauHienTai <= 0 || !gameObject.activeSelf || isDead || isInDamageCooldown) return;
+
         luongMauHienTai = Mathf.Max(0, luongMauHienTai - damage);
         Debug.Log("Player took damage - HP before: " + (luongMauHienTai + damage) + ", HP after: " + luongMauHienTai + " at " + System.DateTime.Now);
+
+        // Kích hoạt hoạt hình Damage
+        animator.SetBool("Damage", true);
+        isInDamageCooldown = true;
+        Invoke("EndDamageCooldown", damageCooldownDuration);
 
         if (thanhMau != null)
         {
@@ -328,6 +337,12 @@ public class Player_Level3 : MonoBehaviour
         }
     }
 
+    private void EndDamageCooldown()
+    {
+        isInDamageCooldown = false;
+        animator.SetBool("Damage", false);
+    }
+
     void Die()
     {
         if (luongMauHienTai <= 0 && gameObject.activeSelf && !isDead)
@@ -339,6 +354,7 @@ public class Player_Level3 : MonoBehaviour
             movement = 0f;
             animator.SetFloat("Walk", 0f);
             animator.SetBool("Jump", false);
+            animator.SetBool("Damage", false); // Đặt lại Damage khi chết
 
             gameObject.SetActive(false);
 
@@ -357,6 +373,7 @@ public class Player_Level3 : MonoBehaviour
             movement = 0f;
             animator.SetFloat("Walk", 0f);
             animator.SetBool("Jump", false);
+            animator.SetBool("Damage", false); // Đặt lại Damage khi chết
 
             gameObject.SetActive(false);
 
@@ -370,6 +387,8 @@ public class Player_Level3 : MonoBehaviour
     public void ResetDeadState()
     {
         isDead = false;
+        isInDamageCooldown = false; // Đặt lại cooldown sát thương khi reset trạng thái chết
+        animator.SetBool("Damage", false); // Đặt lại Damage khi reset
     }
 
     private IEnumerator Dash()
