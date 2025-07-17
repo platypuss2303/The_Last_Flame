@@ -326,18 +326,19 @@ MonoBehaviour:
   gameOverUI: {fileID: 3202566647011804969, guid: 656988622fac6384e951cff902af3b19, type: 3}
   currentCoin: 0
   currentCoinText: {fileID: 0}
-  maxHealthText: {fileID: 0}
-  maxHealth: 10
+  thanhMau: {fileID: 0}
+  luongMauHienTai: 0
+  luongMauToiDa: 10
   movement: 0
   speed: 7
   rb: {fileID: 1177407911607373964}
-  jumpHeight: 10
+  jumpHeight: 15
   animator: {fileID: 531146864220131220}
   attackPoint: {fileID: 5580624740204393844}
   attackRadius: 1.5
   targetLayer:
     serializedVersion: 2
-    m_Bits: 65536
+    m_Bits: 196608
   hasKey: 0
   transitionImage: {fileID: 0}
 --- !u!1 &2450047405327163673
