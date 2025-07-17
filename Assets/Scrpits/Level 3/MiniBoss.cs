@@ -132,18 +132,20 @@ public class MiniBoss : MonoBehaviour
         if (isAttacking || animator == null) yield break;
         isAttacking = true;
 
-        int randomChoice = Random.Range(0, 4);
-        if (randomChoice < 2 || (Time.time - lastSummonTime < summonCooldown)) // 50% hoặc trong cooldown
+        
+        int randomChoice = Random.Range(0, 2);
+        if (randomChoice == 0) 
         {
             animator.SetBool("Attack1", true);
             animator.SetBool("Attack2", false);
-            SummonSkeleton(); // Gọi summon trực tiếp cho Attack1
+            SummonSkeleton(); 
         }
-        else
+        else 
         {
             animator.SetBool("Attack1", false);
             animator.SetBool("Attack2", true);
-            lastSummonTime = Time.time; // Cập nhật thời gian, summon sẽ do Animation Event xử lý cho Attack2
+            
+            lastSummonTime = Time.time; 
         }
 
         yield return new WaitForSeconds(0.5f);
