@@ -132,20 +132,19 @@ public class MiniBoss : MonoBehaviour
         if (isAttacking || animator == null) yield break;
         isAttacking = true;
 
-        
-        int randomChoice = Random.Range(0, 2);
-        if (randomChoice == 0) 
+        // Tăng xác suất Attack1 (75%) so với Attack2 (25%)
+        int randomChoice = Random.Range(0, 4);
+        if (randomChoice < 3) // 0, 1, 2 -> Attack1 (75%)
         {
             animator.SetBool("Attack1", true);
             animator.SetBool("Attack2", false);
-            SummonSkeleton(); 
+            SummonSkeleton(); // Gọi triệu hồi trực tiếp cho Attack1
         }
-        else 
+        else // 3 -> Attack2 (25%)
         {
             animator.SetBool("Attack1", false);
             animator.SetBool("Attack2", true);
-            
-            lastSummonTime = Time.time; 
+            lastSummonTime = Time.time; // Cập nhật thời gian triệu hồi cho Attack2
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -232,7 +231,6 @@ public class MiniBoss : MonoBehaviour
             Die();
         }
     }
-
     private void OnDrawGizmosSelected()
     {
         if (detectPoint != null)

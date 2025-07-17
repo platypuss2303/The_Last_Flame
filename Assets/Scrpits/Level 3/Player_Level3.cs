@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -19,8 +19,9 @@ public class Player_Level3 : MonoBehaviour
     public GameObject gameOverUI;
     public int currentCoin = 0;
     public Text currentCoinText;
-    public Text maxHealthText;
-    public int maxHealth = 10;
+    public ThanhMau thanhMau; // Th√™m thanh m√°u
+    public float luongMauHienTai; // L∆∞·ª£ng m√°u hi·ªán t·∫°i
+    public float luongMauToiDa = 10f; // L∆∞·ª£ng m√°u t·ªëi ƒëa
     public float movement = 0f;
     public float speed = 7f;
     public Rigidbody2D rb;
@@ -53,7 +54,7 @@ public class Player_Level3 : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager_Level3>();
         if (gameManager == null)
         {
-            Debug.LogError("GameManager_Level3 khÙng tÏm th?y trong scene! Vui lÚng thÍm GameManager_Level3 v‡o scene. at " + System.DateTime.Now);
+            Debug.LogError("GameManager_Level3 kh√¥ng t√¨m th·∫•y trong scene! Vui l√≤ng th√™m GameManager_Level3 v√†o scene. at " + System.DateTime.Now);
         }
         else
         {
@@ -66,10 +67,10 @@ public class Player_Level3 : MonoBehaviour
             spriteRenderer.sortingLayerName = "Player";
             spriteRenderer.sortingOrder = 10;
         }
-        else Debug.LogError("SpriteRenderer khÙng tÏm th?y trÍn Player!");
+        else Debug.LogError("SpriteRenderer kh√¥ng t√¨m th·∫•y tr√™n Player!");
 
         tr = GetComponent<TrailRenderer>();
-        if (tr == null) Debug.LogError("TrailRenderer khÙng tÏm th?y trÍn Player!");
+        if (tr == null) Debug.LogError("TrailRenderer kh√¥ng t√¨m th·∫•y tr√™n Player!");
 
         GameObject door = GameObject.FindWithTag("Door");
         if (door != null) doorAnimator = door.GetComponent<Animator>();
@@ -81,7 +82,18 @@ public class Player_Level3 : MonoBehaviour
         sound = FindAnyObjectByType<Sound>();
         if (sound == null)
         {
-            Debug.LogError("Sound object khÙng tÏm th?y trong scene! Vui lÚng thÍm GameObject v?i script Sound.");
+            Debug.LogError("Sound object kh√¥ng t√¨m th·∫•y trong scene! Vui l√≤ng th√™m GameObject v·ªõi script Sound.");
+        }
+
+        // Kh·ªüi t·∫°o thanh m√°u
+        luongMauHienTai = luongMauToiDa;
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau ch∆∞a ƒë∆∞·ª£c g√°n trong Inspector!");
         }
     }
 
@@ -101,7 +113,7 @@ public class Player_Level3 : MonoBehaviour
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
             if (sound != null) sound.PlaySound("Attack");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Attack sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Attack sound!");
         }
         if (!gameObject.activeSelf || isDead) return;
 
@@ -114,7 +126,6 @@ public class Player_Level3 : MonoBehaviour
         }
 
         currentCoinText.text = currentCoin.ToString();
-        maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 
         if (movement < 0f && facingRight)
@@ -134,7 +145,7 @@ public class Player_Level3 : MonoBehaviour
             animator.SetBool("Jump", true);
             isGround = false;
             if (sound != null) sound.PlaySound("Jump");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Jump sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Jump sound!");
         }
 
         if (Mathf.Abs(movement) > 0.1f)
@@ -152,7 +163,7 @@ public class Player_Level3 : MonoBehaviour
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
             if (sound != null) sound.PlaySound("Attack");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Attack sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Attack sound!");
         }
 
         if (Input.GetKeyDown(KeyCode.E) && !isAttackOnCooldown)
@@ -161,7 +172,7 @@ public class Player_Level3 : MonoBehaviour
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
             if (sound != null) sound.PlaySound("Attack");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Attack sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Attack sound!");
         }
 
         if (Input.GetMouseButtonDown(0) && !isAttackOnCooldown)
@@ -173,7 +184,7 @@ public class Player_Level3 : MonoBehaviour
             isAttackOnCooldown = true;
             Invoke("EndAttackCooldown", attackCooldownDuration);
             if (sound != null) sound.PlaySound("Attack");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Attack sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Attack sound!");
         }
     }
 
@@ -218,12 +229,12 @@ public class Player_Level3 : MonoBehaviour
                         if (hitInfo.CompareTag("BossLv3"))
                         {
                             if (sound != null) sound.PlaySound("Boss");
-                            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Boss sound!");
+                            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Boss sound!");
                         }
                         else
                         {
                             if (sound != null) sound.PlaySound("Attack");
-                            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Attack sound!");
+                            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Attack sound!");
                         }
                     }
                 }
@@ -254,7 +265,7 @@ public class Player_Level3 : MonoBehaviour
             if (gameManager != null) gameManager.CollectItem();
             Destroy(other.gameObject);
             if (sound != null) sound.PlaySound("Coin");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Coin sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Coin sound!");
         }
         else if (other.gameObject.tag == "Key")
         {
@@ -269,7 +280,7 @@ public class Player_Level3 : MonoBehaviour
             }
             Destroy(other.gameObject);
             if (sound != null) sound.PlaySound("Key");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Key sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Key sound!");
         }
         else if (other.gameObject.tag == "Door")
         {
@@ -279,7 +290,7 @@ public class Player_Level3 : MonoBehaviour
                 gameManager.OnPlayerReachDoor();
                 Debug.Log("Player_Level3 reached door and called GameManager_Level3.OnPlayerReachDoor at " + System.DateTime.Now);
                 if (sound != null) sound.PlaySound("Door");
-                else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Door sound!");
+                else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Door sound!");
             }
             else
             {
@@ -291,18 +302,26 @@ public class Player_Level3 : MonoBehaviour
             Debug.Log("Entered DeathZone at " + System.DateTime.Now);
             Die();
             if (sound != null) sound.PlaySound("Death");
-            else Debug.LogWarning("Sound object khÙng tÏm th?y khi ph·t Death sound!");
+            else Debug.LogWarning("Sound object kh√¥ng t√¨m th·∫•y khi ph√°t Death sound!");
         }
     }
 
     public void Player_Level3TakeDamage(int damage)
     {
-        if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
-        maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth + " at " + System.DateTime.Now);
-        maxHealthText.text = maxHealth.ToString();
+        if (luongMauHienTai <= 0 || !gameObject.activeSelf || isDead) return;
+        luongMauHienTai = Mathf.Max(0, luongMauHienTai - damage);
+        Debug.Log("Player took damage - HP before: " + (luongMauHienTai + damage) + ", HP after: " + luongMauHienTai + " at " + System.DateTime.Now);
 
-        if (maxHealth == 0 && !isDead)
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau ch∆∞a ƒë∆∞·ª£c g√°n khi c·∫≠p nh·∫≠t m√°u!");
+        }
+
+        if (luongMauHienTai <= 0 && !isDead)
         {
             Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now);
             Die();
@@ -311,10 +330,10 @@ public class Player_Level3 : MonoBehaviour
 
     void Die()
     {
-        if (maxHealth <= 0 && gameObject.activeSelf && !isDead)
+        if (luongMauHienTai <= 0 && gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
+            Debug.Log(this.transform.name + " Die - HP: " + luongMauHienTai + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
 
             speed = 0f;
             movement = 0f;
@@ -331,8 +350,8 @@ public class Player_Level3 : MonoBehaviour
         else if (gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            maxHealth = 0;
-            Debug.Log(this.transform.name + " Die from falling - HP: " + maxHealth + ", Position: " + transform.position);
+            luongMauHienTai = 0;
+            Debug.Log(this.transform.name + " Die from falling - HP: " + luongMauHienTai + ", Position: " + transform.position);
 
             speed = 0f;
             movement = 0f;
