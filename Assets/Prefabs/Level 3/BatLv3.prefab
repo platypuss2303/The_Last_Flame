@@ -43,10 +43,10 @@ GameObject:
   - component: {fileID: 5493329564382628813}
   - component: {fileID: 4404531218782577083}
   - component: {fileID: 317419694095020837}
+  - component: {fileID: 1363519167928737834}
   - component: {fileID: 4149574734979725872}
-  - component: {fileID: 8521680307889539904}
   m_Layer: 11
-  m_Name: Bat
+  m_Name: BatLv3
   m_TagString: Bat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_Sprite: {fileID: -4795363162621231457, guid: e0acea843412c9e45bb6cb3182465acf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -172,6 +172,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1363519167928737834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477629466966549082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678f7a0b3adbbef4e992994072ccef15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flySpeed: 2.5
+  chaseSpeed: 3.5
+  attackRange: 10
+  attackRadius: 2
+  player_Level2: {fileID: 0}
+  attackPoint: {fileID: 3934632909804487761}
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  startingPoint: {fileID: 0}
+  maxHealth: 3
+  facingLeft: 0
+  attackDelay: 1.5
+  chase: 0
 --- !u!60 &4149574734979725872
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -233,29 +259,3 @@ PolygonCollider2D:
       - {x: 1.0384616, y: -0.11538462}
       - {x: 1.6538463, y: 0.5}
   m_UseDelaunayMesh: 0
---- !u!114 &8521680307889539904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7477629466966549082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 984bd11e10dd741458fe616cad7b7e71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flySpeed: 2.5
-  chaseSpeed: 3.5
-  attackRange: 10
-  attackRadius: 2
-  player_Level3: {fileID: 0}
-  attackPoint: {fileID: 3934632909804487761}
-  attackLayer:
-    serializedVersion: 2
-    m_Bits: 32768
-  startingPoint: {fileID: 0}
-  maxHealth: 3
-  facingLeft: 0
-  attackDelay: 1.5
-  chase: 0
