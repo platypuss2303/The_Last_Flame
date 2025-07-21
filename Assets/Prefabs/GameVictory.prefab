@@ -328,8 +328,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ScenceManageMen, Assembly-CSharp
-        m_MethodName: Menu
+        m_TargetAssemblyTypeName: GameManager_Level2, Assembly-CSharp
+        m_MethodName: ReturnToMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -540,8 +540,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ScenceManageMen, Assembly-CSharp
-        m_MethodName: NextBttn
+        m_TargetAssemblyTypeName: GameManager_Level2, Assembly-CSharp
+        m_MethodName: LoadNextLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
