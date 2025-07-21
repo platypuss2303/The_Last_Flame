@@ -25,6 +25,7 @@ TagManager:
   - Player_Level3
   - EnemyLv3
   - BossLv3
+  - Key_Level3
   layers:
   - Default
   - TransparentFX
