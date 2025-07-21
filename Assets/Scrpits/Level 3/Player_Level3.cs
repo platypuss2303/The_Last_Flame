@@ -45,8 +45,8 @@ public class Player_Level3 : MonoBehaviour
     private TrailRenderer tr;
 
     private bool isAttackOnCooldown = false;
-    private float attackCooldownDuration = 1f;
-
+    private float attackCooldownDuration = 1.5f;
+    
     private bool isInDamageCooldown = false; // Biến mới để theo dõi cooldown sát thương
     private float damageCooldownDuration = 0.5f; // Thời gian cooldown sát thương
 
