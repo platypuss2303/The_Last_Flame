@@ -328,7 +328,7 @@ MonoBehaviour:
   currentCoinText: {fileID: 0}
   thanhMau: {fileID: 0}
   luongMauHienTai: 0
-  luongMauToiDa: 10
+  luongMauToiDa: 100
   movement: 0
   speed: 7
   rb: {fileID: 1177407911607373964}
