@@ -294,4 +294,10 @@ public class GameManager_Level2 : MonoBehaviour
         if (key != null) key.SetActive(false);
         SceneManager.LoadScene("Menu");
     }
+    public void LoadNextLevel()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Level 3");
+        Debug.Log("Loading Level 3 at " + System.DateTime.Now);
+    }
 }
