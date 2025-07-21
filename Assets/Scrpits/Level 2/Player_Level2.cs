@@ -19,8 +19,9 @@ public class Player_Level2 : MonoBehaviour
     public GameObject gameOverUI;
     public int currentCoin = 0;
     public Text currentCoinText;
-    public Text maxHealthText;
-    public int maxHealth = 10;
+    public ThanhMau thanhMau; // Thêm thanh máu
+    public float luongMauHienTai; // Lượng máu hiện tại
+    public float luongMauToiDa = 10f; // Lượng máu tối đa
     public float movement = 0f;
     public float speed = 7f;
     public Rigidbody2D rb;
@@ -45,6 +46,9 @@ public class Player_Level2 : MonoBehaviour
 
     private bool isAttackOnCooldown = false;
     private float attackCooldownDuration = 1f;
+
+    private bool isInDamageCooldown = false; // Biến để theo dõi cooldown sát thương
+    private float damageCooldownDuration = 0.5f; // Thời gian cooldown sát thương
 
     private Sound sound;
 
@@ -83,6 +87,17 @@ public class Player_Level2 : MonoBehaviour
         {
             Debug.LogError("Sound object không tìm thấy trong scene! Vui lòng thêm GameObject với script Sound.");
         }
+
+        // Khởi tạo thanh máu
+        luongMauHienTai = luongMauToiDa;
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau chưa được gán trong Inspector!");
+        }
     }
 
     void Update()
@@ -114,7 +129,6 @@ public class Player_Level2 : MonoBehaviour
         }
 
         currentCoinText.text = currentCoin.ToString();
-        maxHealthText.text = maxHealth.ToString();
         movement = Input.GetAxis("Horizontal");
 
         if (movement < 0f && facingRight)
@@ -297,29 +311,50 @@ public class Player_Level2 : MonoBehaviour
 
     public void Player_Level2TakeDamage(int damage)
     {
-        if (maxHealth <= 0 || !gameObject.activeSelf || isDead) return;
-        maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP before: " + (maxHealth + damage) + ", HP after: " + maxHealth + " at " + System.DateTime.Now);
-        maxHealthText.text = maxHealth.ToString();
+        if (luongMauHienTai <= 0 || !gameObject.activeSelf || isDead || isInDamageCooldown) return;
 
-        if (maxHealth == 0 && !isDead)
+        luongMauHienTai = Mathf.Max(0, luongMauHienTai - damage);
+        Debug.Log("Player took damage - HP before: " + (luongMauHienTai + damage) + ", HP after: " + luongMauHienTai + " at " + System.DateTime.Now);
+
+        // Kích hoạt hoạt hình Damage
+        animator.SetBool("Damage", true);
+        isInDamageCooldown = true;
+        Invoke("EndDamageCooldown", damageCooldownDuration);
+
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau chưa được gán khi cập nhật máu!");
+        }
+
+        if (luongMauHienTai <= 0 && !isDead)
         {
             Debug.Log("Health reached 0, calling Die() at " + System.DateTime.Now);
             Die();
         }
     }
 
+    private void EndDamageCooldown()
+    {
+        isInDamageCooldown = false;
+        animator.SetBool("Damage", false);
+    }
+
     void Die()
     {
-        if (maxHealth <= 0 && gameObject.activeSelf && !isDead)
+        if (luongMauHienTai <= 0 && gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
+            Debug.Log(this.transform.name + " Die - HP: " + luongMauHienTai + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
 
             speed = 0f;
             movement = 0f;
             animator.SetFloat("Walk", 0f);
             animator.SetBool("Jump", false);
+            animator.SetBool("Damage", false); // Đặt lại Damage khi chết
 
             gameObject.SetActive(false);
 
@@ -331,13 +366,14 @@ public class Player_Level2 : MonoBehaviour
         else if (gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            maxHealth = 0;
-            Debug.Log(this.transform.name + " Die from falling - HP: " + maxHealth + ", Position: " + transform.position);
+            luongMauHienTai = 0;
+            Debug.Log(this.transform.name + " Die from falling - HP: " + luongMauHienTai + ", Position: " + transform.position);
 
             speed = 0f;
             movement = 0f;
             animator.SetFloat("Walk", 0f);
             animator.SetBool("Jump", false);
+            animator.SetBool("Damage", false); // Đặt lại Damage khi chết
 
             gameObject.SetActive(false);
 
@@ -351,6 +387,8 @@ public class Player_Level2 : MonoBehaviour
     public void ResetDeadState()
     {
         isDead = false;
+        isInDamageCooldown = false; // Đặt lại cooldown sát thương khi reset trạng thái chết
+        animator.SetBool("Damage", false); // Đặt lại Damage khi reset
     }
 
     private IEnumerator Dash()
