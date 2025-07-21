@@ -20,8 +20,11 @@ public class Player : MonoBehaviour
     public GameObject gameOverUI;
     public int currentCoin = 0;
     public Text currentCoinText;
-    public Text maxHealthText;
-    public int maxHealth = 10;
+    public ThanhMau thanhMau; // Thêm thanh máu
+    public float luongMauHienTai; // Lượng máu hiện tại
+    public float luongMauToiDa = 10f; // Lượng máu tối đa
+    private bool isInDamageCooldown = false; // Thêm cooldown sát thương
+    private float damageCooldownDuration = 0.5f; // Thời gian cooldown sát thương
     public float movement = 0f;
     public float speed = 7f;
     public Rigidbody2D rb;
@@ -73,7 +76,7 @@ public class Player : MonoBehaviour
             Debug.LogError("TrailRenderer không tìm thấy trên Player! Vui lòng thêm TrailRenderer component.");
         }
 
-        Debug.Log("Player Start - GameObject active: " + gameObject.activeSelf + ", HP: " + maxHealth + ", Position: " + transform.position);
+        Debug.Log("Player Start - GameObject active: " + gameObject.activeSelf + ", HP: " + luongMauHienTai + ", Position: " + transform.position);
 
         GameObject door = GameObject.FindWithTag("Door");
         if (door != null)
@@ -92,6 +95,17 @@ public class Player : MonoBehaviour
         else
         {
             Debug.LogError("VictoryUI is not assigned in the Inspector!");
+        }
+
+        // Khởi tạo thanh máu
+        luongMauHienTai = luongMauToiDa;
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau chưa được gán trong Inspector!");
         }
     }
 
@@ -118,7 +132,7 @@ public class Player : MonoBehaviour
 
         if (!gameObject.activeSelf || isDead)
         {
-            Debug.LogError("Player is inactive or dead in Update! HP: " + maxHealth);
+            Debug.LogError("Player is inactive or dead in Update! HP: " + luongMauHienTai);
             return;
         }
 
@@ -133,14 +147,14 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (maxHealth <= 0)
+        if (luongMauHienTai <= 0)
         {
             Die();
             return;
         }
 
         currentCoinText.text = currentCoin.ToString();
-        maxHealthText.text = maxHealth.ToString();
+        
         movement = Input.GetAxis("Horizontal");
 
         if (movement < 0f && facingRight == true)
@@ -297,13 +311,13 @@ public class Player : MonoBehaviour
         else if (other.gameObject.tag == "Trap")
         {
             PlayerTakeDamage(2);
-            Debug.Log("Player hit a trap! HP now: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
+            Debug.Log("Player hit a trap! HP now: " + luongMauHienTai + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
         }
         else if (other.gameObject.tag == "Key")
         {
             hasKey = true;
             Destroy(other.gameObject);
-            Debug.Log("Player picked up the key! HP: " + maxHealth + ", Position: " + transform.position);
+            Debug.Log("Player picked up the key! HP: " + luongMauHienTai + ", Position: " + transform.position);
         }
         else if (other.gameObject.tag == "Door" && hasKey)
         {
@@ -311,21 +325,36 @@ public class Player : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("DeathZone"))
         {
-            Die();
-            Debug.Log("Player fell into DeathZone! HP: " + maxHealth + ", Position: " + transform.position);
+            PlayerTakeDamage((int)luongMauToiDa); // Gây sát thương đủ để chết
+            Debug.Log("Player fell into DeathZone! HP: " + luongMauHienTai + ", Position: " + transform.position);
         }
     }
 
     public void PlayerTakeDamage(int damage)
     {
-        if (maxHealth <= 0 || !gameObject.activeSelf || isDead)
+        if (luongMauHienTai <= 0 || !gameObject.activeSelf || isDead || isInDamageCooldown)
         {
             return;
         }
-        maxHealth = Mathf.Max(0, maxHealth - damage);
-        Debug.Log("Player took damage - HP: " + maxHealth + ", GameObject active: " + gameObject.activeSelf + ", Position: " + transform.position);
+        luongMauHienTai = Mathf.Max(0, luongMauHienTai - damage);
+        Debug.Log("Player took damage - HP before: " + (luongMauHienTai + damage) + ", HP after: " + luongMauHienTai + " at " + System.DateTime.Now);
 
-        if (maxHealth <= 0)
+        // Kích hoạt hoạt hình Damage
+        animator.SetBool("Damage", true);
+        isInDamageCooldown = true;
+        Invoke("EndDamageCooldown", damageCooldownDuration);
+
+        // Cập nhật thanh máu
+        if (thanhMau != null)
+        {
+            thanhMau.capNhatThanhMau(luongMauHienTai, luongMauToiDa);
+        }
+        else
+        {
+            Debug.LogError("ThanhMau chưa được gán khi cập nhật máu!");
+        }
+
+        if (luongMauHienTai <= 0)
         {
             Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
             foreach (Enemy enemy in enemies)
@@ -347,6 +376,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void EndDamageCooldown()
+    {
+        isInDamageCooldown = false;
+        animator.SetBool("Damage", false);
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (attackPoint == null)
@@ -359,15 +394,16 @@ public class Player : MonoBehaviour
 
     void Die()
     {
-        if (maxHealth <= 0 && gameObject.activeSelf && !isDead)
+        if (luongMauHienTai <= 0 && gameObject.activeSelf && !isDead)
         {
             isDead = true;
-            Debug.Log(this.transform.name + " Die - HP: " + maxHealth + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
+            Debug.Log(this.transform.name + " Die - HP: " + luongMauHienTai + ", GameObject active before destroy: " + gameObject.activeSelf + ", Position: " + transform.position);
 
             speed = 0f;
             movement = 0f;
             animator.SetFloat("Walk", 0f);
             animator.SetBool("Jump", false);
+            animator.SetBool("Damage", false); // Đặt lại Damage khi chết
 
             gameObject.SetActive(false);
 
@@ -375,23 +411,11 @@ public class Player : MonoBehaviour
             {
                 gameManager.GameOver();
             }
-        }
-        else if (gameObject.activeSelf && !isDead)
-        {
-            isDead = true;
-            maxHealth = 0;
-            Debug.Log(this.transform.name + " Die from falling - HP: " + maxHealth + ", Position: " + transform.position);
 
-            speed = 0f;
-            movement = 0f;
-            animator.SetFloat("Walk", 0f);
-            animator.SetBool("Jump", false);
-
-            gameObject.SetActive(false);
-
-            if (gameManager != null)
+            // Cập nhật thanh máu khi chết
+            if (thanhMau != null)
             {
-                gameManager.GameOver();
+                thanhMau.capNhatThanhMau(0, luongMauToiDa);
             }
         }
     }
@@ -413,7 +437,7 @@ public class Player : MonoBehaviour
             {
                 vitoryUI.SetActive(true);
                 isWon = true;
-                Debug.Log("Victory UI activated after reaching door with key! HP: " + maxHealth + ", Position: " + transform.position);
+                Debug.Log("Victory UI activated after reaching door with key! HP: " + luongMauHienTai + ", Position: " + transform.position);
                 Time.timeScale = 0; // Dừng game khi thắng
             }
             else
