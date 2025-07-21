@@ -8,7 +8,7 @@ public class GameManager_Level3 : MonoBehaviour
     public int totalEnemies = 2;
     private int collectedItems = 0;
     private int enemiesKilled = 0;
-    private bool isBossKilled = false;
+    private bool isBossKilled = false; // Theo dõi boss bị tiêu diệt (1 boss)
     private bool hasKeyCollected = false; // Theo dõi người chơi đã nhặt chìa khóa chưa
 
     public GameObject skyParent;
@@ -29,14 +29,12 @@ public class GameManager_Level3 : MonoBehaviour
 
     void Start()
     {
-       
         if (skyParent != null) skyRenderers = skyParent.GetComponentsInChildren<SpriteRenderer>();
-        else Debug.LogWarning("skyParent is not assigned in GameManager_Level3!");
+        else Debug.LogWarning("skyParent chưa được gán trong GameManager_Level3!");
 
         if (cloudParent != null) cloudRenderers = cloudParent.GetComponentsInChildren<SpriteRenderer>();
-        else Debug.LogWarning("cloudParent is not assigned in GameManager_Level3!");
+        else Debug.LogWarning("cloudParent chưa được gán trong GameManager_Level3!");
 
-     
         // Đặt màu ban đầu và chạy hiệu ứng fade
         SetInitialColors();
         StartCoroutine(FadeInCursedEffect());
@@ -78,7 +76,7 @@ public class GameManager_Level3 : MonoBehaviour
         // Đổi màu và hiện chìa khóa khi boss bị tiêu diệt
         if (!hasChangedColor && isBossKilled)
         {
-            Debug.Log("Boss killed - Changing to normal colors and showing key at " + System.DateTime.Now);
+            Debug.Log("Boss đã bị tiêu diệt - Đổi sang màu bình thường và hiện chìa khóa tại " + System.DateTime.Now);
             StartCoroutine(ChangeToNormalColors());
             ShowKey();
             hasChangedColor = true;
@@ -93,19 +91,19 @@ public class GameManager_Level3 : MonoBehaviour
     public void CollectItem()
     {
         collectedItems++;
-        Debug.Log($"Collected Items: {collectedItems}/{totalItems} at " + System.DateTime.Now);
+        Debug.Log($"Đã thu thập vật phẩm: {collectedItems}/{totalItems} tại " + System.DateTime.Now);
     }
 
     public void KillEnemy()
     {
         enemiesKilled++;
-        Debug.Log($"Enemies Killed: {enemiesKilled}/{totalEnemies} at " + System.DateTime.Now);
+        Debug.Log($"Đã tiêu diệt kẻ thù: {enemiesKilled}/{totalEnemies} tại " + System.DateTime.Now);
     }
 
     public void KillBoss()
     {
         isBossKilled = true;
-        Debug.Log($"Boss Killed: isBossKilled={isBossKilled} at " + System.DateTime.Now);
+        Debug.Log($"Boss đã bị tiêu diệt: isBossKilled={isBossKilled} tại " + System.DateTime.Now);
     }
 
     public bool IsBossKilled()
@@ -117,18 +115,18 @@ public class GameManager_Level3 : MonoBehaviour
     {
         if (isGameOver) return;
 
-        Debug.Log("Game Over! Player has been defeated at " + System.DateTime.Now);
+        Debug.Log("Game Over! Người chơi đã bị hạ gục tại " + System.DateTime.Now);
         isGameOver = true;
 
         if (gameOverScreen != null)
         {
             gameOverScreen.SetActive(true);
             Time.timeScale = 1f;
-            Debug.Log("Game Over screen activated at " + System.DateTime.Now);
+            Debug.Log("Màn hình Game Over được kích hoạt tại " + System.DateTime.Now);
         }
         else
         {
-            Debug.LogWarning("GameOverScreen is not assigned in GameManager_Level3!");
+            Debug.LogWarning("GameOverScreen chưa được gán trong GameManager_Level3!");
         }
     }
 
@@ -138,11 +136,11 @@ public class GameManager_Level3 : MonoBehaviour
         {
             victoryUI.SetActive(true);
             Time.timeScale = 0; // Dừng game khi thắng, giống Level 1
-            Debug.Log("Victory UI activated at " + System.DateTime.Now);
+            Debug.Log("Màn hình Victory được kích hoạt tại " + System.DateTime.Now);
         }
         else
         {
-            Debug.LogError("victoryUI is not assigned in GameManager_Level3!");
+            Debug.LogError("victoryUI chưa được gán trong GameManager_Level3!");
         }
     }
 
@@ -171,34 +169,34 @@ public class GameManager_Level3 : MonoBehaviour
             foreach (SpriteRenderer cr in cloudRenderers)
                 if (cr != null) cr.color = dayColor;
 
-        Debug.Log("Changed to normal colors (dayColor for sky and clouds) at " + System.DateTime.Now);
+        Debug.Log("Đã đổi sang màu bình thường (dayColor cho trời và mây) tại " + System.DateTime.Now);
     }
 
     private void ShowKey()
     {
         if (key == null)
         {
-            Debug.LogWarning("Key is not assigned in GameManager_Level3! at " + System.DateTime.Now);
+            Debug.LogWarning("Chìa khóa chưa được gán trong GameManager_Level3! tại " + System.DateTime.Now);
             return;
         }
         key.SetActive(true);
         SpriteRenderer keyRenderer = key.GetComponent<SpriteRenderer>();
         if (keyRenderer == null)
         {
-            Debug.LogWarning("Key has no SpriteRenderer! at " + System.DateTime.Now);
+            Debug.LogWarning("Chìa khóa không có SpriteRenderer! tại " + System.DateTime.Now);
             return;
         }
         keyRenderer.sortingLayerName = "Player";
         keyRenderer.sortingOrder = 20;
         keyRenderer.enabled = true;
         keyRenderer.color = Color.yellow;
-        Debug.Log($"Key appeared - Active: {key.activeSelf}, Enabled: {keyRenderer.enabled}, Sprite: {(keyRenderer.sprite != null ? keyRenderer.sprite.name : "None")}, Position: {key.transform.position}, Color: {keyRenderer.color} at " + System.DateTime.Now);
+        Debug.Log($"Chìa khóa xuất hiện - Active: {key.activeSelf}, Enabled: {keyRenderer.enabled}, Sprite: {(keyRenderer.sprite != null ? keyRenderer.sprite.name : "None")}, Vị trí: {key.transform.position}, Màu: {keyRenderer.color} tại " + System.DateTime.Now);
     }
 
     public void CollectKey()
     {
         hasKeyCollected = true;
-        Debug.Log("Key collected by player at " + System.DateTime.Now);
+        Debug.Log("Người chơi đã nhặt chìa khóa tại " + System.DateTime.Now);
     }
 
     public void OnPlayerReachDoor()
@@ -206,11 +204,11 @@ public class GameManager_Level3 : MonoBehaviour
         if (hasKeyCollected)
         {
             Victory();
-            Debug.Log("Player reached door with key, triggering Victory at " + System.DateTime.Now);
+            Debug.Log("Người chơi đến cửa với chìa khóa, kích hoạt Victory tại " + System.DateTime.Now);
         }
         else
         {
-            Debug.Log("Player reached door but no key collected at " + System.DateTime.Now);
+            Debug.Log("Người chơi đến cửa nhưng chưa có chìa khóa tại " + System.DateTime.Now);
         }
     }
 
@@ -222,18 +220,18 @@ public class GameManager_Level3 : MonoBehaviour
             {
                 UIController.Instance.pausePanel.SetActive(true);
                 Time.timeScale = 0;
-                Debug.Log("Game paused at " + System.DateTime.Now);
+                Debug.Log("Game tạm dừng tại " + System.DateTime.Now);
             }
             else
             {
                 UIController.Instance.pausePanel.SetActive(false);
                 Time.timeScale = 1;
-                Debug.Log("Game unpaused at " + System.DateTime.Now);
+                Debug.Log("Game tiếp tục tại " + System.DateTime.Now);
             }
         }
         else
         {
-            Debug.LogError("UIController.Instance or pausePanel is not assigned in GameManager_Level3!");
+            Debug.LogError("UIController.Instance hoặc pausePanel chưa được gán trong GameManager_Level3!");
         }
     }
 
